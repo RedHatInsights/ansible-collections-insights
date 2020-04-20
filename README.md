@@ -9,4 +9,4 @@ Red Hat Insights Collection
     - insights_config
     - insights_register
   - **Roles**:
-    - [insights-client](https://galaxy.ansible.com/RedHatInsights/insights-client)
+    - [insights-client](roles/insights-client/README.md)
