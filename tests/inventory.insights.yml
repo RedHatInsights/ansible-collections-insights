@@ -1,5 +1,0 @@
----
-plugin: redhat.insights.insights
-keyed_groups:
-    - key: insights_account
-      prefix: rhsm
