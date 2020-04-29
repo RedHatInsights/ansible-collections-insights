@@ -13,23 +13,23 @@ class ActionModule(ActionBase):
         insights_name = self._task.args.get('insights_name', 'insights-client')
 
         config_vars = dict(
-            username = self._task.args.get('username', None),
-            password = self._task.args.get('password', None),
-            auto_config = self._task.args.get('auto_config', None),
-            authmethod = self._task.args.get('authmethod', None),
-            display_name = self._task.args.get('display_name', None),
-            proxy = self._task.args.get('proxy', None)
+            username=self._task.args.get('username', None),
+            password=self._task.args.get('password', None),
+            auto_config=self._task.args.get('auto_config', None),
+            authmethod=self._task.args.get('authmethod', None),
+            display_name=self._task.args.get('display_name', None),
+            proxy=self._task.args.get('proxy', None)
         )
 
         for k, v in config_vars.items():
             if v:
                 new_module_args = dict(
-                    path = '/etc/' + insights_name + '/' + insights_name + '.conf',
-                    section = insights_name,
-                    option = k,
-                    value = v,
-                    no_extra_spaces = True,
-                    state = "present"
+                    path='/etc/' + insights_name + '/' + insights_name + '.conf',
+                    section=insights_name,
+                    option=k,
+                    value=v,
+                    no_extra_spaces=True,
+                    state="present"
                 )
                 result.update(self._execute_module(
                     module_name='ini_file',
@@ -39,4 +39,3 @@ class ActionModule(ActionBase):
                 ))
 
         return result
-

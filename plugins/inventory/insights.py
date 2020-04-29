@@ -40,6 +40,7 @@ try:
 except ImportError:
     raise AnsibleError('This script requires python-requests 1.1 as a minimum version')
 
+
 class InventoryModule(BaseInventoryPlugin, Constructable):
     ''' Host inventory parser for ansible using foreman as source. '''
 
@@ -77,14 +78,14 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
-                                    (response.status_code, response.text))
+                                   (response.status_code, response.text))
             elif response.status_code == 200:
                 results += response.json()['results']
                 total = response.json()['total']
                 count = response.json()['count']
                 per_page = response.json()['per_page']
                 page = response.json()['page']
-                if per_page * (page -1) + count < total:
+                if per_page * (page - 1) + count < total:
                     url = "https://cloud.redhat.com/api/inventory/v1/hosts?page=%s" % (page + 1)
                 else:
                     url = None
