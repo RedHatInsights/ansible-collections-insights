@@ -1,6 +1,6 @@
 Red Hat Insights Collection
 ===========================
-
+![CI](https://github.com/willtome/ansible-collections-insights/workflows/CI/badge.svg)
 ## Included Content:
 
   - **Inventory source**:
