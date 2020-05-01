@@ -1,6 +1,6 @@
 Red Hat Insights Collection
 ===========================
-![CI](https://github.com/willtome/ansible-collections-insights/workflows/CI/badge.svg)
+![CI](https://github.com/redhatinsights/ansible-collections-insights/workflows/CI/badge.svg)
 ## Included Content:
 
   - **Inventory source**:
@@ -9,4 +9,4 @@ Red Hat Insights Collection
     - insights_config
     - insights_register
   - **Roles**:
-    - [insights-client](roles/insights-client/README.md)
+    - [insights_client](roles/insights-client/README.md)

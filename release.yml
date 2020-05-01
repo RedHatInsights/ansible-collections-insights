@@ -4,10 +4,10 @@
   gather_facts: no
   connection: local
   vars:
-    collection_namespace: willtome
+    collection_namespace: redhatinsights
     collection_name: insights
     collection_version: "{{ version }}"
-    collection_repo: https://github.com/willtome/ansible-collections-insights
+    collection_repo: https://github.com/redhatinsights/ansible-collections-insights
     api_key: undef
 
   tasks:
