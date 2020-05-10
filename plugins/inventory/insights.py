@@ -135,8 +135,6 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                     if attribute != 'display_name':
                         patching[display_name][attribute] = system['attributes'][attribute]
 
-            print(patching)
-
         for host in results:
             host_name = self.inventory.add_host(host['display_name'])
             for item in host.keys():
