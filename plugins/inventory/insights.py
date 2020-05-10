@@ -27,6 +27,15 @@ DOCUMENTATION = '''
         required: True
         env:
             - name: INSIGHTS_PASSWORD
+      vars_prefix:
+        description: prefix to apply to host variables
+        default: 'insights_'
+        type: str
+      get_patches:
+        description: Fetch patching information for each system.
+        required: False
+        type: bool
+        default: False
 '''
 
 from ansible.plugins.inventory import BaseInventoryPlugin, to_safe_group_name, Constructable
@@ -46,6 +55,26 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
     NAME = 'redhat.insights.insights'
 
+    def get_patches(self, stale):
+        url = "https://cloud.redhat.com/api/patch/v1/systems?filter[stale]=%s" % stale
+        results = []
+
+        while url: 
+            response = self.session.get(url, auth=self.auth, headers=self.headers)
+
+            if response.status_code != 200:
+                raise AnsibleError("http error (%s): %s" %
+                                   (response.status_code, response.text))
+            elif response.status_code == 200:
+                results += response.json()['data']
+                next_page = response.json()['links']['next']
+                if next_page:
+                    url = next_page
+                else:
+                    url = None
+
+        return results
+
     def verify_file(self, path):
         valid = False
         if super(InventoryModule, self).verify_file(path):
@@ -60,21 +89,24 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         self._read_config_data(path)
 
         strict = self.get_option('strict')
+        get_patches = self.get_option('get_patches')
+        vars_prefix = self.get_option('vars_prefix') 
 
-        auth = requests.auth.HTTPBasicAuth(self.get_option('user'),
+        self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'),
                                            self.get_option('password'))
 
-        headers = {
+        self.headers = {
             "Accept": "application/json"
         }
 
-        url = "https://cloud.redhat.com/api/inventory/v1/hosts"
+        url = "https://cloud.redhat.com/api/inventory/v1/hosts?&staleness=fresh&staleness=stale&staleness=stale_warning&staleness=unknown"
 
-        session = requests.Session()
+
+        self.session = requests.Session()
         results = []
 
         while url:
-            response = session.get(url, auth=auth, headers=headers)
+            response = self.session.get(url, auth=self.auth, headers=self.headers)
 
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
@@ -86,19 +118,41 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 per_page = response.json()['per_page']
                 page = response.json()['page']
                 if per_page * (page - 1) + count < total:
-                    url = "https://cloud.redhat.com/api/inventory/v1/hosts?page=%s" % (page + 1)
+                    url = "%s?&staleness=fresh&staleness=stale&staleness=stale_warning&staleness=unknown&page=%s" % url, (page + 1)
                 else:
                     url = None
+
+        if get_patches:
+            stale_patches = self.get_patches(stale=True)
+            patches = self.get_patches(stale=False)
+            patching_results = patches + stale_patches
+            patching = {}
+
+            for system in patching_results:
+                display_name = system['attributes']['display_name']
+                patching[display_name] = {}
+                for attribute in system['attributes']:
+                    if attribute != 'display_name':
+                        patching[display_name][attribute] = system['attributes'][attribute]
+
+            print(patching)
 
         for host in results:
             host_name = self.inventory.add_host(host['display_name'])
             for item in host.keys():
                 if item != 'ansible_host':
-                    self.inventory.set_variable(host_name, 'insights_' + item, host[item])
+                    self.inventory.set_variable(host_name, vars_prefix + item, host[item])
                 elif host[item] is None:
                     self.inventory.set_variable(host_name, item, host['fqdn'])
                 else:
                     self.inventory.set_variable(host_name, item, host[item])
+
+            if get_patches:
+                if host_name in patching.keys():
+                        self.inventory.set_variable(host_name, vars_prefix + 'patching', 
+                                                     patching[host['display_name']])
+                else:
+                    self.inventory.set_variable(host_name, vars_prefix + 'patching', {'enabled': False})
 
             self._set_composite_vars(
                 self.get_option('compose'),
