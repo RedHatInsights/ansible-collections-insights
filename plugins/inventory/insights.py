@@ -156,8 +156,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
             if get_patches:
                 if host_name in patching.keys():
-                        self.inventory.set_variable(host_name, vars_prefix + 'patching',
-                                                    patching[host['display_name']])
+                    self.inventory.set_variable(host_name, vars_prefix + 'patching',
+                                                patching[host['display_name']])
                 else:
                     self.inventory.set_variable(host_name, vars_prefix + 'patching', {'enabled': False})
 
