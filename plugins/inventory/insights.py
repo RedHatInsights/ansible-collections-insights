@@ -29,7 +29,7 @@ DOCUMENTATION = '''
             - name: INSIGHTS_PASSWORD
       vars_prefix:
         description: prefix to apply to host variables
-        default: 'insights_'
+        default: insights_
         type: str
       get_patches:
         description: Fetch patching information for each system.
@@ -37,6 +37,22 @@ DOCUMENTATION = '''
         type: bool
         default: False
 '''
+
+EXAMPLES = '''
+# basic example using environment vars for auth
+plugin: redhat.insights.insights
+
+# create groups for patching
+plugin: redhat.insights.insights
+get_patches: yes
+groups:
+  patching: insights_patching.enabled
+  stale: insights_patching.stale
+  bug_patch: insights_patching.rhba_count > 0
+  security_patch: insights_patching.rhsa_count > 0
+  enhancement_patch: insights_patching.rhea_count > 0
+'''
+
 
 from ansible.plugins.inventory import BaseInventoryPlugin, to_safe_group_name, Constructable
 from ansible.errors import AnsibleError
@@ -59,7 +75,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         url = "https://cloud.redhat.com/api/patch/v1/systems?filter[stale]=%s" % stale
         results = []
 
-        while url: 
+        while url:
             response = self.session.get(url, auth=self.auth, headers=self.headers)
 
             if response.status_code != 200:
@@ -88,22 +104,15 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         super(InventoryModule, self).parse(inventory, loader, path)
         self._read_config_data(path)
 
+        url = "https://cloud.redhat.com/api/inventory/v1/hosts?&staleness=fresh&staleness=stale&staleness=stale_warning&staleness=unknown"
         strict = self.get_option('strict')
         get_patches = self.get_option('get_patches')
-        vars_prefix = self.get_option('vars_prefix') 
-
-        self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'),
-                                           self.get_option('password'))
-
-        self.headers = {
-            "Accept": "application/json"
-        }
-
-        url = "https://cloud.redhat.com/api/inventory/v1/hosts?&staleness=fresh&staleness=stale&staleness=stale_warning&staleness=unknown"
-
-
-        self.session = requests.Session()
+        vars_prefix = self.get_option('vars_prefix')
         results = []
+
+        self.headers = { "Accept": "application/json" }
+        self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'), self.get_option('password'))
+        self.session = requests.Session()
 
         while url:
             response = self.session.get(url, auth=self.auth, headers=self.headers)
@@ -147,15 +156,15 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
             if get_patches:
                 if host_name in patching.keys():
-                        self.inventory.set_variable(host_name, vars_prefix + 'patching', 
+                        self.inventory.set_variable(host_name, vars_prefix + 'patching',
                                                      patching[host['display_name']])
                 else:
                     self.inventory.set_variable(host_name, vars_prefix + 'patching', {'enabled': False})
 
             self._set_composite_vars(
                 self.get_option('compose'),
-                self.inventory.get_host(host_name).get_vars(), host_name,
-                strict)
+                self.inventory.get_host(host_name).get_vars(), 
+                host_name, strict)
 
             self._add_host_to_composed_groups(self.get_option('groups'),
                                               dict(), host_name, strict)
