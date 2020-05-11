@@ -110,7 +110,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         vars_prefix = self.get_option('vars_prefix')
         results = []
 
-        self.headers = { "Accept": "application/json" }
+        self.headers = {"Accept": "application/json"}
         self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'), self.get_option('password'))
         self.session = requests.Session()
 
@@ -157,13 +157,13 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             if get_patches:
                 if host_name in patching.keys():
                         self.inventory.set_variable(host_name, vars_prefix + 'patching',
-                                                     patching[host['display_name']])
+                                                    patching[host['display_name']])
                 else:
                     self.inventory.set_variable(host_name, vars_prefix + 'patching', {'enabled': False})
 
             self._set_composite_vars(
                 self.get_option('compose'),
-                self.inventory.get_host(host_name).get_vars(), 
+                self.inventory.get_host(host_name).get_vars(),
                 host_name, strict)
 
             self._add_host_to_composed_groups(self.get_option('groups'),
