@@ -8,5 +8,5 @@
         examples: "{{ lookup('file', '../plugins/inventory/insights.py') | regex_search(\"(?<=EXAMPLES\\s=\\s''')((.|\\n)*?)(?=''')\") }}"
 
     - template:
-        src: ./inventory.md.j2
+        src: ./templates/inventory.md.j2
         dest: ./inventory.md
