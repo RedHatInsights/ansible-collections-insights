@@ -6,7 +6,7 @@ Red Hat Insights Collection
   - **Inventory source**:
     - [insights](docs/inventory.md)
   - **Modules**:
-    - insights_config
-    - insights_register
+    - [insights_config](docs/insights_config.md)
+    - [insights_register](docs/insights_register.md)
   - **Roles**:
-    - [insights_client](roles/insights-client/README.md)
+    - [insights_client](roles/insights_client/README.md)
