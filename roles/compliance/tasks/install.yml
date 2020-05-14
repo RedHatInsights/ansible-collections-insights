@@ -1,0 +1,7 @@
+---
+- name: install openscap packages
+  yum:
+    name:
+      - openscap
+      - scap-security-guide
+      - openscap-scanner
