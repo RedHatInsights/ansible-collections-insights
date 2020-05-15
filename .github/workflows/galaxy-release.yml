@@ -1,0 +1,31 @@
+---
+name: galaxy-release
+on: 
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+
+      - name: Install ansible-base (devel)
+        run: pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
+
+      - name: print version
+        run: echo ${GITHUB_REF}
+      #- name: Run sanity tests
+      #  run: ansible-test sanity --docker -v --color --python 3.6
+      
+      #- name: Publish to galaxy
+      #  run: ansible-playbook release.yml -e collection_namespace=${{ github.repository_owner }} -e collection_version=
