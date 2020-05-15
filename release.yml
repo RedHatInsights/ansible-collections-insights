@@ -6,7 +6,7 @@
   vars:
     collection_namespace: redhatinsights
     collection_name: insights
-    collection_version: "{{ github_tag.split('/')[-1] }}"
+    collection_version: "{{ github_tag.split('/')[-1] | regex_search('(\\d.\\d.\\d.*)') }}"
     collection_repo: https://github.com/redhatinsights/ansible-collections-insights
     api_key: undef
 
