@@ -4,7 +4,7 @@ Red Hat Insights Collection
 ## Included Content:
 
   - **Inventory source**:
-    - insights
+    - [insights](docs/inventory.md)
   - **Modules**:
     - insights_config
     - insights_register
