@@ -147,10 +147,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         for host in results:
             host_name = self.inventory.add_host(host['display_name'])
             for item in host.keys():
-                if host[item] is None:
-                    self.inventory.set_variable(host_name, item, host['fqdn'])
-                else:
-                    self.inventory.set_variable(host_name, vars_prefix + item, host[item])
+                self.inventory.set_variable(host_name, vars_prefix + item, host[item])
 
             if get_patches:
                 if host_name in patching.keys():
