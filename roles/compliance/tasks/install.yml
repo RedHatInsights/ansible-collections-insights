@@ -5,3 +5,4 @@
       - openscap
       - scap-security-guide
       - openscap-scanner
+    state: latest
