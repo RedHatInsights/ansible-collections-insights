@@ -4,7 +4,7 @@
   gather_facts: no
   connection: local
   vars:
-    collection_namespace: redhatinsights
+    collection_namespace: "{{ namespace  | lower }}"
     collection_name: insights
     collection_version: "{{ github_tag.split('/')[-1] | regex_search('(\\d.\\d.\\d.*)') }}"
     collection_repo: https://github.com/redhatinsights/ansible-collections-insights
