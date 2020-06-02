@@ -108,7 +108,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         url = first_url
         results = {}
 
-        while url:  
+        while url:
             response = self.session.get(url, auth=self.auth, headers=self.headers)
 
             if response.status_code != 200:
@@ -131,11 +131,11 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         results = {}
 
         if len(tag_list) > 0:
-          for tag in tag_list:
-            if tag['namespace'] not in results.keys():
-              results[tag['namespace']] = {tag['key']: tag['value']}
-            else:
-              results[tag['namespace']].update({tag['key']: tag['value']})
+            for tag in tag_list:
+                if tag['namespace'] not in results.keys():
+                    results[tag['namespace']] = {tag['key']: tag['value']}
+                else:
+                    results[tag['namespace']].update({tag['key']: tag['value']})
 
         return results
 
@@ -226,4 +226,3 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                                               dict(), host_name, strict)
             self._add_host_to_keyed_groups(self.get_option('keyed_groups'),
                                            dict(), host_name, strict)
-
