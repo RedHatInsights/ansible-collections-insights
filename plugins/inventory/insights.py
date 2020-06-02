@@ -41,6 +41,11 @@ DOCUMENTATION = '''
         required: False
         type: bool
         default: False
+      filter_tags:
+        description: Filter hosts with given tags
+        required: False
+        type: list
+        default: []
 '''
 
 EXAMPLES = '''
@@ -57,9 +62,11 @@ groups:
   security_patch: insights_patching.rhsa_count > 0
   enhancement_patch: insights_patching.rhea_count > 0
 
-# create groups from tags
+# filter host by tags and create groups from tags
 plugin: redhat.insights.insights
 get_tags: True
+filter_tags:
+  - insights-client/env=prod
 keyed_groups:
   - key: insights_tags['insights-client']
     prefix: insights
@@ -157,9 +164,13 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         get_patches = self.get_option('get_patches')
         vars_prefix = self.get_option('vars_prefix')
         get_tags = self.get_option('get_tags')
+        filter_tags = self.get_option('filter_tags')
         systems_by_id = {}
         system_tags = {}
         results = []
+
+        if len(filter_tags) > 0:
+            url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
 
         self.headers = {"Accept": "application/json"}
         self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'), self.get_option('password'))
@@ -179,6 +190,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 page = response.json()['page']
                 if per_page * (page - 1) + count < total:
                     url = "%s?&staleness=fresh&staleness=stale&staleness=stale_warning&staleness=unknown&page=%s" % url, (page + 1)
+                    if len(filter_tags) > 0:
+                        url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
                 else:
                     url = None
 

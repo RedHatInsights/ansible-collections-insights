@@ -4,7 +4,8 @@
 ### Added
   - `insights_tags` variable for the `insights_client` role to deploy tags to managed systems
   - `get_tags` option for inventory plugin to pull tags as variables
-  - added examples for creating groups from tags
+  - `filter_tags` option for inventory plugin to filter hosts server side by tag
+  - added examples for filtering by tag and creating groups from tags
 
 ## [0.0.2]
 ### Added

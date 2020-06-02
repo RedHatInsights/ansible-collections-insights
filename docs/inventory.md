@@ -38,6 +38,14 @@ False</td>
 <td> Fetch tag data for each system.</td>
 </tr>
 <tr>
+<td><b>filter_tags</b></br>
+</td>
+<td><b>Default:</b><br> 
+[]</td>
+<td></td>
+<td> Filter hosts with given tags</td>
+</tr>
+<tr>
 <td><b>plugin</b></br>
 <p style="color:red;font-size:75%">required</p></td>
 <td><b>Choices:</b><br>
@@ -90,9 +98,11 @@ groups:
   security_patch: insights_patching.rhsa_count > 0
   enhancement_patch: insights_patching.rhea_count > 0
 
-# create groups from tags
+# filter host by tags and create groups from tags
 plugin: redhat.insights.insights
 get_tags: True
+filter_tags:
+  - insights-client/env=prod
 keyed_groups:
   - key: insights_tags['insights-client']
     prefix: insights
