@@ -1,5 +1,11 @@
 # Insights Collection Changes
 
+## [unreleased]
+### Added
+  - `insights_tags` variable for the `insights_client` role to deploy tags to managed systems
+  - `get_tags` option for inventory plugin to pull tags as variables
+  - added examples for creating groups from tags
+
 ## [0.0.2]
 ### Added
  - get_patching option added to insights inventory plugin fetches patching data from Insights patching service.
