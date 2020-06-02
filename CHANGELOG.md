@@ -8,7 +8,7 @@
  - added role for Insights compliance
 
 ### Fixed
- - updated inventory endpoint url to incldue all staleness states.
+ - updated inventory endpoint url to include all staleness states.
 
 ### Removed
   - `ansible_host` variable no longer set by default from inventory plugin. Set `ansible_host` with compose.
