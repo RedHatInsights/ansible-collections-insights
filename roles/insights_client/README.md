@@ -76,6 +76,19 @@ See the section 'Example Playbook' for information on various ways to use these 
     If the insights client is behind a proxy or firewall, a proxy can be specified. Default is unspecified.
 		Ex: http://user:pass@192.168.100.50:8080 
 
+* insights_tags: (optional)
+    If defined, the key value pairs defined by `insights_tags` will be deployed to the host to define tags in the Insights portal.
+    Ex: 
+    ```
+    insights_tags:
+      environment: prod
+      application: web
+      location:
+        country: us
+        state: nc
+        city: durham
+    ```
+
 * ansible_python_interpreter: (see Requirements above to determine if this is needed)
 
     This variable allows you to provide the python interpreter path for ansible to use. This is needed when 
