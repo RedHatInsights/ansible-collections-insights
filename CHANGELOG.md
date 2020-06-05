@@ -1,6 +1,6 @@
 # Insights Collection Changes
 
-## [unreleased]
+## [0.0.2]
 ### Added
   - `insights_tags` variable for the `insights_client` role to deploy tags to managed systems
   - `get_tags` option for inventory plugin to pull tags as variables
@@ -15,7 +15,10 @@
  - added role for Insights compliance
 
 ### Fixed
- - updated inventory endpoint url to incldue all staleness states.
+ - updated inventory endpoint url to include all staleness states.
+
+### Removed
+  - `ansible_host` variable no longer set by default from inventory plugin. Set `ansible_host` with compose.
 
 ### Removed
   - `ansible_host` variable no longer set by default from inventory plugin. Set `ansible_host` with compose.
