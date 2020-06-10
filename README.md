@@ -10,3 +10,4 @@ Red Hat Insights Collection
     - [insights_register](docs/insights_register.md)
   - **Roles**:
     - [insights_client](roles/insights_client/README.md)
+    - [compliance](roles/compliance/README.md)
