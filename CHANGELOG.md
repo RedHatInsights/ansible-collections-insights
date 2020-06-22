@@ -6,6 +6,13 @@
 
 ## [0.0.2]
 ### Added
+  - `insights_tags` variable for the `insights_client` role to deploy tags to managed systems
+  - `get_tags` option for inventory plugin to pull tags as variables
+  - `filter_tags` option for inventory plugin to filter hosts server side by tag
+  - added examples for filtering by tag and creating groups from tags
+
+## [0.0.2]
+### Added
  - get_patching option added to insights inventory plugin fetches patching data from Insights patching service.
  - vars_prefix option added to insights inventory plugin allows for customization of host var variable prefix.
  - added docs for modules and role
@@ -13,6 +20,9 @@
 
 ### Fixed
  - updated inventory endpoint url to include all staleness states.
+
+### Removed
+  - `ansible_host` variable no longer set by default from inventory plugin. Set `ansible_host` with compose.
 
 ### Removed
   - `ansible_host` variable no longer set by default from inventory plugin. Set `ansible_host` with compose.

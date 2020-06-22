@@ -36,6 +36,16 @@ DOCUMENTATION = '''
         required: False
         type: bool
         default: False
+      get_tags:
+        description: Fetch tag data for each system.
+        required: False
+        type: bool
+        default: False
+      filter_tags:
+        description: Filter hosts with given tags
+        required: False
+        type: list
+        default: []
 '''
 
 EXAMPLES = '''
@@ -51,6 +61,15 @@ groups:
   bug_patch: insights_patching.rhba_count > 0
   security_patch: insights_patching.rhsa_count > 0
   enhancement_patch: insights_patching.rhea_count > 0
+
+# filter host by tags and create groups from tags
+plugin: redhat.insights.insights
+get_tags: True
+filter_tags:
+  - insights-client/env=prod
+keyed_groups:
+  - key: insights_tags['insights-client']
+    prefix: insights
 '''
 
 
@@ -91,6 +110,42 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
         return results
 
+    def get_tags(self, ids):
+        first_url = "https://cloud.redhat.com/api/inventory/v1/hosts/%s/tags?per_page=50" % ','.join(ids)
+        url = first_url
+        results = {}
+
+        while url:
+            response = self.session.get(url, auth=self.auth, headers=self.headers)
+
+            if response.status_code != 200:
+                raise AnsibleError("http error (%s): %s" %
+                                   (response.status_code, response.text))
+            elif response.status_code == 200:
+                results.update(response.json()['results'])
+                total = response.json()['total']
+                count = response.json()['count']
+                per_page = response.json()['per_page']
+                page = response.json()['page']
+                if per_page * (page - 1) + count < total:
+                    url = "%s&page=%s" % (first_url, (page + 1))
+                else:
+                    url = None
+
+        return results
+
+    def parse_tags(self, tag_list):
+        results = {}
+
+        if len(tag_list) > 0:
+            for tag in tag_list:
+                if tag['namespace'] not in results.keys():
+                    results[tag['namespace']] = {tag['key']: tag['value']}
+                else:
+                    results[tag['namespace']].update({tag['key']: tag['value']})
+
+        return results
+
     def verify_file(self, path):
         valid = False
         if super(InventoryModule, self).verify_file(path):
@@ -108,7 +163,14 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         strict = self.get_option('strict')
         get_patches = self.get_option('get_patches')
         vars_prefix = self.get_option('vars_prefix')
+        get_tags = self.get_option('get_tags')
+        filter_tags = self.get_option('filter_tags')
+        systems_by_id = {}
+        system_tags = {}
         results = []
+
+        if len(filter_tags) > 0:
+            url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
 
         self.headers = {"Accept": "application/json"}
         self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'), self.get_option('password'))
@@ -128,6 +190,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 page = response.json()['page']
                 if per_page * (page - 1) + count < total:
                     url = "%s?&staleness=fresh&staleness=stale&staleness=stale_warning&staleness=unknown&page=%s" % url, (page + 1)
+                    if len(filter_tags) > 0:
+                        url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
                 else:
                     url = None
 
@@ -146,6 +210,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
         for host in results:
             host_name = self.inventory.add_host(host['display_name'])
+            systems_by_id[host['id']] = host_name
             for item in host.keys():
                 self.inventory.set_variable(host_name, vars_prefix + item, host[item])
 
@@ -155,6 +220,15 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                                                 patching[host['display_name']])
                 else:
                     self.inventory.set_variable(host_name, vars_prefix + 'patching', {'enabled': False})
+
+        if get_tags:
+            system_tags = self.get_tags(systems_by_id.keys())
+
+        for uuid in systems_by_id:
+            host_name = systems_by_id[uuid]
+
+            if get_tags:
+                self.inventory.set_variable(host_name, vars_prefix + 'tags', self.parse_tags(system_tags[uuid]))
 
             self._set_composite_vars(
                 self.get_option('compose'),
