@@ -1,5 +1,9 @@
 # Insights Collection Changes
 
+## [1.0.0]
+### Added
+ - Production Release
+
 ## [0.0.2]
 ### Added
  - get_patching option added to insights inventory plugin fetches patching data from Insights patching service.
