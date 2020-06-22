@@ -1,5 +1,9 @@
 # Insights Collection Changes
 
+## [1.0.1]
+### Added
+  - Tagging support from 0.0.2 release
+
 ## [1.0.0]
 ### Added
  - Production Release
