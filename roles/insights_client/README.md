@@ -124,11 +124,11 @@ In the examples directory is a very basic playbook utilizing this role:
     ---
     - hosts: all
       collections:
-        - redhat.insights
+        - redhatinsights.insights
         
       tasks:
         - include_role: 
-            name: insights-client
+            name: insights_client
           when: ansible_os_family == 'RedHat'
 
 Here is an example with additional configuration (though using a separate file is preferred if including 
@@ -136,14 +136,14 @@ usernames or passwords):
 
     - hosts: all
       collections:
-        - redhat.insights
+        - redhatinsights.insights
       vars:
         insights_display_name: 'example_system'
         ansible_python_interpreter: '/usr/libexec/platform-python'
 
       tasks:
         - include_role: 
-            name: insights-client
+            name: insights_client
           when: ansible_os_family == 'RedHat'
 
 Example Configuration File

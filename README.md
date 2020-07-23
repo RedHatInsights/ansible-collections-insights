@@ -4,10 +4,10 @@ Red Hat Insights Collection
 ## Included Content:
 
   - **Inventory source**:
-    - [insights](docs/inventory.md)
+    - [insights](https://github.com/redhatinsights/ansible-collections-insights/blob/master/docs/inventory.md)
   - **Modules**:
-    - [insights_config](docs/insights_config.md)
-    - [insights_register](docs/insights_register.md)
+    - [insights_config](https://github.com/redhatinsights/ansible-collections-insights/blob/master/docs/insights_config.md)
+    - [insights_register](https://github.com/redhatinsights/ansible-collections-insights/blob/master/docs/insights_register.md)
   - **Roles**:
-    - [insights_client](roles/insights_client/README.md)
-    - [compliance](roles/compliance/README.md)
+    - [insights_client](https://github.com/redhatinsights/ansible-collections-insights/blob/master/roles/insights_client/README.md)
+    - [compliance](https://github.com/redhatinsights/ansible-collections-insights/blob/master/roles/compliance/README.md)
