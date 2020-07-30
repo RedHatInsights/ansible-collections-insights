@@ -48,7 +48,15 @@ options:
       This set an optional proxy for the insights client to connect through if the client
       is behind a firewall or requires a proxy. Default is unspecified (none).
     required: false
-
+  insights_obfuscate:
+    description: >
+      Obfuscate IP addresses. Can be set to "True" or "False". Default is unspecified.
+    required: false
+  insights_obfuscate_hostname:
+    description: >
+      Obfuscate hostname. Requires obfuscate=True. Can be set to "True" or "False". Default is unspecified.
+    required: false
+    
 author:
     - Jason Stephens (@Jason-RH)
 '''
@@ -73,5 +81,11 @@ EXAMPLES = '''
 - name: Configure the insights client to register with RHSM and a display name
   insights_config:
     display_name: "{{ insights_display_name }}"
+  become: true
+
+- name: Configure the insights client to register with RHSM and obfuscate ip and hostname
+  insights_config:
+    obfuscate: "{{ insights_obfuscate }}"
+    obfuscate_hostname: "{{ insights_obfuscate_hostname }}"
   become: true
 '''
