@@ -75,6 +75,14 @@ See the section 'Example Playbook' for information on various ways to use these 
 
     If the insights client is behind a proxy or firewall, a proxy can be specified. Default is unspecified.
 		Ex: http://user:pass@192.168.100.50:8080 
+		
+* insights_obfuscate: (optional)
+
+    Obfuscate IP addresses. Can be set to "True" or "False". Default is unspecified.
+		
+* insights_obfuscate_hostname: (optional)
+
+    Obfuscate hostname. Requires obfuscate=True. Can be set to "True" or "False". Default is unspecified.
 
 * insights_tags: (optional)
     If defined, the key value pairs defined by `insights_tags` will be deployed to the host to define tags in the Insights portal.
