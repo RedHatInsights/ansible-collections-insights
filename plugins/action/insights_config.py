@@ -18,7 +18,13 @@ class ActionModule(ActionBase):
             auto_config=self._task.args.get('auto_config', None),
             authmethod=self._task.args.get('authmethod', None),
             display_name=self._task.args.get('display_name', None),
-            proxy=self._task.args.get('proxy', None)
+            proxy=self._task.args.get('proxy', None),
+            cert_verify=self._task.args.get('cert_verify', None),
+            legacy_upload=self._task.args.get('legacy_upload', None),
+            base_url=self._task.args.get('base_url', None),
+            auto_update=self._task.args.get('auto_update', None),
+            obfuscate=self._task.args.get('obfuscate', None),
+            obfuscate_hostname=self._task.args.get('obfuscate_hostname', None)
         )
 
         for k, v in config_vars.items():
@@ -29,6 +35,7 @@ class ActionModule(ActionBase):
                     option=k,
                     value=v,
                     no_extra_spaces=True,
+                    backup=True,
                     state="present"
                 )
                 result.update(self._execute_module(
