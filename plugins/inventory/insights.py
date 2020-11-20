@@ -189,7 +189,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 per_page = response.json()['per_page']
                 page = response.json()['page']
                 if per_page * (page - 1) + count < total:
-                    url = "%s?&staleness=fresh&staleness=stale&staleness=stale_warning&staleness=unknown&page=%s" % url, (page + 1)
+                    url = "%s&page=%s" % (url, (page + 1))
                     if len(filter_tags) > 0:
                         url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
                 else:
