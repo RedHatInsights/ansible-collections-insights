@@ -27,6 +27,14 @@ DOCUMENTATION = '''
         required: True
         env:
             - name: INSIGHTS_PASSWORD
+      staleness:
+        description: Choose what hosts to return, based on staleness
+        default: [ 'fresh', 'stale', 'unknown' ]
+        type: list
+      registered_with:
+        description: Filter out any host not registered with the specified service
+        default: insights
+        type: str
       vars_prefix:
         description: prefix to apply to host variables
         default: insights_
@@ -159,18 +167,24 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         super(InventoryModule, self).parse(inventory, loader, path)
         self._read_config_data(path)
 
-        url = "https://cloud.redhat.com/api/inventory/v1/hosts?&staleness=fresh&staleness=stale&staleness=stale_warning&staleness=unknown"
+        url = "https://cloud.redhat.com/api/inventory/v1/hosts?"
         strict = self.get_option('strict')
         get_patches = self.get_option('get_patches')
+        staleness = self.get_option('staleness')
         vars_prefix = self.get_option('vars_prefix')
         get_tags = self.get_option('get_tags')
         filter_tags = self.get_option('filter_tags')
+        registered_with = self.get_option('registered_with')
         systems_by_id = {}
         system_tags = {}
         results = []
 
         if len(filter_tags) > 0:
             url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
+        if len(staleness) > 0:
+            url = "%s&staleness=%s" % (url, '&staleness='.join(staleness))
+        if registered_with:
+            url = "%s&registered_with=%s" % (url, registered_with)
 
         self.headers = {"Accept": "application/json"}
         self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'), self.get_option('password'))
