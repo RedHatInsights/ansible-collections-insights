@@ -27,6 +27,9 @@ DOCUMENTATION = '''
         required: True
         env:
             - name: INSIGHTS_PASSWORD
+      server:
+        description: Inventory server to connect to
+        default: https://cloud.redhat.com
       staleness:
         description: Choose what hosts to return, based on staleness
         default: [ 'fresh', 'stale', 'unknown' ]
@@ -99,7 +102,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
     NAME = 'redhat.insights.insights'
 
     def get_patches(self, stale):
-        url = "https://cloud.redhat.com/api/patch/v1/systems?filter[stale]=%s" % stale
+        query = "api/patch/v1/systems?filter[stale]=%s" % stale
+        url = "%s/%s" % (self.server, query)
         results = []
 
         while url:
@@ -119,8 +123,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         return results
 
     def get_tags(self, ids):
-        first_url = "https://cloud.redhat.com/api/inventory/v1/hosts/%s/tags?per_page=50" % ','.join(ids)
-        url = first_url
+        first_url = "api/inventory/v1/hosts/%s/tags?per_page=50" % ','.join(ids)
+        url = '%s/%s' % (self.server, first_url)
         results = {}
 
         while url:
@@ -167,7 +171,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         super(InventoryModule, self).parse(inventory, loader, path)
         self._read_config_data(path)
 
-        url = "https://cloud.redhat.com/api/inventory/v1/hosts?"
+        self.server = self.get_option('server')
+        url = "%s/api/inventory/v1/hosts?" % (self.server)
         strict = self.get_option('strict')
         get_patches = self.get_option('get_patches')
         staleness = self.get_option('staleness')
