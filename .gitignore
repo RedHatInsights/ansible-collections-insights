@@ -389,5 +389,4 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/git,linux,pydev,python,windows,pycharm+all,jupyternotebook,vim,webstorm,emacs,dotenv
 
 # Collection Artifacts
-galaxy.yml
 *.tar.gz

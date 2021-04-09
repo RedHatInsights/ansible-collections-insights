@@ -14,9 +14,9 @@ DOCUMENTATION = '''
         - constructed
     options:
       plugin:
-        description: the name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as it's own.
+        description: the name of this plugin, it should always be set to 'redhatinsights.insights.insights' for this plugin to recognize it as it's own.
         required: True
-        choices: ['redhat.insights.insights']
+        choices: ['redhatinsights.insights.insights']
       user:
         description: Red Hat username
         required: True
@@ -61,10 +61,10 @@ DOCUMENTATION = '''
 
 EXAMPLES = '''
 # basic example using environment vars for auth
-plugin: redhat.insights.insights
+plugin: redhatinsights.insights.insights
 
 # create groups for patching
-plugin: redhat.insights.insights
+plugin: redhatinsights.insights.insights
 get_patches: yes
 groups:
   patching: insights_patching.enabled
@@ -74,7 +74,7 @@ groups:
   enhancement_patch: insights_patching.rhea_count > 0
 
 # filter host by tags and create groups from tags
-plugin: redhat.insights.insights
+plugin: redhatinsights.insights.insights
 get_tags: True
 filter_tags:
   - insights-client/env=prod
@@ -99,7 +99,7 @@ except ImportError:
 class InventoryModule(BaseInventoryPlugin, Constructable):
     ''' Host inventory parser for ansible using foreman as source. '''
 
-    NAME = 'redhat.insights.insights'
+    NAME = 'redhatinsights.insights.insights'
 
     def get_patches(self, stale):
         query = "api/patch/v1/systems?filter[stale]=%s" % stale

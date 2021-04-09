@@ -5,9 +5,7 @@
   connection: local
   vars:
     collection_namespace: "{{ namespace  | lower }}"
-    collection_name: insights
     collection_version: "{{ github_tag.split('/')[-1] | regex_search('(\\d.\\d.\\d.*)') }}"
-    collection_repo: https://github.com/redhatinsights/ansible-collections-insights
     api_key: undef
 
   tasks:
@@ -16,36 +14,49 @@
         - name: fix inventory plugin
           replace:
             path: "{{ playbook_dir }}/plugins/inventory/insights.py"
-            regexp: redhat.insights
-            replace: "{{ collection_namespace }}.{{collection_name }}"
+            regexp: redhatinsights.insights
+            replace: "{{ collection_namespace }}.insights"
+
+        - name: fix inventory plugin docs
+          replace:
+            path: "{{ playbook_dir }}/docs/inventory.md"
+            regexp: redhatinsights.insights
+            replace: "{{ collection_namespace }}.insights"
 
         - name: fix role test
           replace:
             path: "{{ playbook_dir }}/roles/insights_client/tests/example-insights-client-playbook.yml"
-            regexp: redhat.insights
-            replace: "{{ collection_namespace }}.{{collection_name }}"
+            regexp: redhatinsights.insights
+            replace: "{{ collection_namespace }}.insights"
 
-    - name: create galaxy.yml
-      template:
-        src: "{{ playbook_dir}}/galaxy.yml.j2"
-        dest: "{{ playbook_dir }}/galaxy.yml"
+    - name: update galaxy.yml version
+      replace:
+        path: "{{ playbook_dir }}/galaxy.yml"
+        regexp: "0.0.1-devel"
+        replace: "{{ collection_version }}"
+
+    - name: update galaxy.yml namespace
+      replace:
+        path: "{{ playbook_dir }}/galaxy.yml"
+        regexp: "namespace: redhatinsights"
+        replace: "{{ collection_namespace }}"
 
     - name: build collection
       command:
         cmd: ansible-galaxy collection build
         chdir: "{{ playbook_dir }}"
-        creates: "{{ playbook_dir }}/{{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
+        creates: "{{ playbook_dir }}/{{ collection_namespace }}-insights-{{ collection_version }}.tar.gz"
       tags: build
 
     - name: install collection
       command:
-        cmd: "ansible-galaxy collection install {{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz -p ~/.ansible/collections/"
+        cmd: "ansible-galaxy collection install {{ collection_namespace }}-insights-{{ collection_version }}.tar.gz -p ~/.ansible/collections/"
         chdir: "{{ playbook_dir }}"
       tags: install
 
     - name: publish collection
       command:
-        cmd: "ansible-galaxy collection publish --api-key={{ api_key }} {{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
+        cmd: "ansible-galaxy collection publish --api-key={{ api_key }} {{ collection_namespace }}-insights-{{ collection_version }}.tar.gz"
         chdir: "{{ playbook_dir }}"
       tags: publish
 

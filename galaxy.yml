@@ -1,14 +1,13 @@
 ---
-namespace: {{ collection_namespace }}
-name: {{ collection_name }}
-version: {{ collection_version }}
+namespace: redhatinsights
+name: insights
+version: 0.0.1-devel
 readme: README.md
 authors:
 - Will Tome (@wtome)
 description: Ansible Collection for Red Hat insights
-repository: {{ collection_repo }}
+repository: https://github.com/redhatinsights/ansible-collections-insights
 build_ignore:
-- galaxy.yml.j2
 - release.yml
 - .gitignore
 - changelogs/.plugin-cache.yaml
