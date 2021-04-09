@@ -232,6 +232,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             systems_by_id[host['id']] = host_name
             for item in host.keys():
                 self.inventory.set_variable(host_name, vars_prefix + item, host[item])
+                if item == 'fqdn':
+                    self.inventory.set_variable(host_name, 'ansible_host', host[item])
 
             if get_patches:
                 if host_name in patching.keys():
