@@ -1,0 +1,70 @@
+---
+# Steps required to get system ready for the Insights resource-optimization service:
+# 1. Check if insights-client is installed on system.
+# 2. Check if core_collect is enabled on system.
+# 3. Install pcp package on your system.
+# 4. Configure pmlogger
+# 5. Create configuration file for pcp
+# 6. Start and enable pmcd service
+# 7. Start and enable pmlogger service
+
+- hosts: all
+  become: yes
+  gather_facts: True
+  tasks:
+    - name: Ensure latest version of insights-client is installed
+      yum:
+        name: insights-client
+        state: latest
+
+    - name: Ensure core_collect is enabled in insights-client.conf
+      lineinfile:
+        state: present
+        dest: /etc/insights-client/insights-client.conf
+        insertafter: "^#core_collect=True"
+        line: "core_collect=True"
+      when: not ansible_check_mode
+
+    - name: Install pcp packages
+      yum:
+        name: pcp
+        state: latest
+
+    - name: Configure pmlogger
+      lineinfile:
+        dest: /etc/pcp/pmlogger/control.d/local
+        regexp: ".*config.ros.*"
+        line: "LOCALHOSTNAME	n   y	PCP_LOG_DIR/pmlogger/ros	-r -T24h10m -c config.ros -v 100Mb"
+        create: yes
+
+    - name: Create pcp configuration file for ROS
+      copy:
+        dest: /var/lib/pcp/config/pmlogger/config.ros
+        content: |
+          log mandatory on default {
+            mem.util.used
+            mem.physmem
+            kernel.all.cpu.user
+            kernel.all.cpu.sys
+            kernel.all.cpu.nice
+            kernel.all.cpu.steal
+            kernel.all.cpu.idle
+            kernel.all.cpu.wait.total
+            disk.all.total
+            mem.util.cached
+            mem.util.bufmem
+            mem.util.free
+          }
+          [access]
+          disallow .* : all;
+          disallow :* : all;
+          allow local:* : enquire;
+
+    - name: Ensure pcp services are running
+      systemd:
+        state: started
+        enabled: yes
+        name: "{{ item }}"
+      with_items:
+        - 'pmcd'
+        - 'pmlogger'
