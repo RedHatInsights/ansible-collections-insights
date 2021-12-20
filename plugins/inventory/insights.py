@@ -120,7 +120,6 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 results += response.json()['data']
                 next_page = response.json()['links']['next']
                 if next_page:
-                    #url = next_page
                     url = url =  "%s/%s" % (self.server, next_page)
                 else:
                     url = None
