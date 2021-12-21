@@ -52,7 +52,7 @@ DOCUMENTATION = '''
         type: bool
         default: False
       get_system_advisories:
-        descrption: Fetch advisories information for each system. If enabled will also fetch pathching information.
+        description: Fetch advisories information for each system. If enabled will also fetch pathching information.
         required: False
         type: bool
         default: False
