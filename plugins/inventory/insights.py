@@ -93,7 +93,7 @@ keyed_groups:
 '''
 
 
-from ansible.plugins.inventory import BaseInventoryPlugin, to_safe_group_name, Constructable
+from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
 from ansible.errors import AnsibleError
 from distutils.version import LooseVersion
 
@@ -119,7 +119,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                                 (response.status_code, response.text))
         system_advisories = response.json()
         return system_advisories
-        
+
     def get_patches(self, stale, get_system_advisories, filter_tags):
         def format_url(server,api_call,filter_tags):
             url = "%s/%s" % (server, api_call)
