@@ -88,7 +88,7 @@ keyed_groups:
 '''
 
 
-from ansible.plugins.inventory import BaseInventoryPlugin, to_safe_group_name, Constructable
+from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
 from ansible.errors import AnsibleError
 from distutils.version import LooseVersion
 
