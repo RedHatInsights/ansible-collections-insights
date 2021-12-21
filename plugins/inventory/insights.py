@@ -110,6 +110,16 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
     NAME = 'test.insights.insights'
 
+    def get_system_advisories(self, system_id):
+        query = "api/patch/v1/export/systems"
+        url = "%s/%s/%s/advisories" % (self.server, query, system_id)
+        response = self.session.get(url, auth=self.auth, headers=self.headers)
+        if response.status_code != 200:
+            raise AnsibleError("http error (%s): %s" %
+                                (response.status_code, response.text))
+        system_advisories = response.json()
+        return system_advisories
+        
     def get_patches(self, stale, get_system_advisories, filter_tags):
         def format_url(server,api_call,filter_tags):
             url = "%s/%s" % (server, api_call)
