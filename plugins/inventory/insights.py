@@ -56,6 +56,11 @@ DOCUMENTATION = '''
         required: False
         type: bool
         default: False
+      get_system_packages:
+        description: Fetch packages information for each system. If enabled will also fetch pathching information.
+        required: False
+        type: bool
+        default: False
       get_tags:
         description: Fetch tag data for each system.
         required: False
@@ -120,7 +125,17 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         system_advisories = response.json()
         return system_advisories
 
-    def get_patches(self, stale, get_system_advisories, filter_tags):
+    def get_system_packages(self, system_id):
+        query = "api/patch/v1/export/systems"
+        url = "%s/%s/%s/packages" % (self.server, query, system_id)
+        response = self.session.get(url, auth=self.auth, headers=self.headers)
+        if response.status_code != 200:
+            raise AnsibleError("http error (%s): %s" %
+                                (response.status_code, response.text))
+        system_packages = response.json()
+        return system_packages
+        
+    def get_patches(self, stale, get_system_advisories,get_system_packages,filter_tags):
         def format_url(server,api_call,filter_tags):
             url = "%s/%s" % (server, api_call)
             if len(filter_tags) > 0:
@@ -146,6 +161,11 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 id = result['id']
                 advisory_result = self.get_system_advisories(id)
                 result['attributes']['advisory'] = advisory_result
+        if get_system_packages:
+            for result in results:
+                id = result['id']
+                packages_result = self.get_system_packages(id)
+                result['attributes']['packages'] = packages_result
         return results
 
     def get_tags(self, ids):
@@ -169,19 +189,16 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                     url = "%s&page=%s" % (first_url, (page + 1))
                 else:
                     url = None
-
         return results
 
     def parse_tags(self, tag_list):
         results = {}
-
         if len(tag_list) > 0:
             for tag in tag_list:
                 if tag['namespace'] not in results.keys():
                     results[tag['namespace']] = {tag['key']: tag['value']}
                 else:
                     results[tag['namespace']].update({tag['key']: tag['value']})
-
         return results
 
     def verify_file(self, path):
@@ -202,6 +219,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         strict = self.get_option('strict')
         get_patches = self.get_option('get_patches')
         get_system_advisories = self.get_option('get_system_advisories')
+        get_system_packages = self.get_option('get_system_packages')
         staleness = self.get_option('staleness')
         selection = self.get_option('selection')
         vars_prefix = self.get_option('vars_prefix')
@@ -242,9 +260,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 else:
                     url = None
 
-        if get_patches or get_system_advisories:
-            stale_patches = self.get_patches(stale=True,get_system_advisories=get_system_advisories,filter_tags=filter_tags)
-            patches = self.get_patches(stale=False,get_system_advisories=get_system_advisories,filter_tags=filter_tags)
+        if get_patches or get_system_advisories or get_system_packages:
+            stale_patches = self.get_patches(stale=True,get_system_advisories=get_system_advisories,get_system_packages=get_system_packages,filter_tags=filter_tags)
+            patches = self.get_patches(stale=False,get_system_advisories=get_system_advisories,get_system_packages=get_system_packages,filter_tags=filter_tags)
             patching_results = patches + stale_patches
             patching = {}
 
@@ -263,7 +281,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 if item == selection:
                     self.inventory.set_variable(host_name, 'ansible_host', host[item])
 
-            if get_patches or get_system_advisories:
+            if get_patches or get_system_advisories or get_system_packages:
                 if host_name in patching.keys():
                     self.inventory.set_variable(host_name, vars_prefix + 'patching',
                                                 patching[host['display_name']])
