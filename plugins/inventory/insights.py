@@ -88,7 +88,7 @@ keyed_groups:
 '''
 
 
-from ansible.plugins.inventory import BaseInventoryPlugin, to_safe_group_name, Constructable
+from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
 from ansible.errors import AnsibleError
 from distutils.version import LooseVersion
 
@@ -120,7 +120,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 results += response.json()['data']
                 next_page = response.json()['links']['next']
                 if next_page:
-                    url = next_page
+                   url =  "%s/%s" % (self.server, next_page)
                 else:
                     url = None
 
