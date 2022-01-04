@@ -112,7 +112,7 @@ except ImportError:
 class InventoryModule(BaseInventoryPlugin, Constructable):
     ''' Host inventory parser for ansible using foreman as source. '''
 
-    NAME = 'test.insights.insights'
+    NAME = 'redhat.insights.insights'
 
     def get_patches(self, stale, get_system_advisories,get_system_packages,filter_tags):
         def get_system_patching_info(system_id,info):
