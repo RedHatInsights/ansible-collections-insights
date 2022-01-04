@@ -51,7 +51,15 @@ False</td>
 <td><b>Default:</b><br> 
 False</td>
 <td></td>
-<td> Get advisories per ansible managed host in hostvars</td>
+<td> Get advisories per ansible managed host in hostvars.</td>
+</tr>
+<tr>
+<td><b>get_system_packages</b></br>
+</td>
+<td><b>Default:</b><br> 
+False</td>
+<td></td>
+<td> Get packages information per ansible managed host in hostvars.</td>
 </tr>
 <tr>
 <td><b>plugin</b></br>
