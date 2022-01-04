@@ -32,26 +32,11 @@ insights_config - This module handles initial configuration of the insights clie
 </td>
 </tr>
 <tr>
-<td><b>password</b></br>
+<td><b>insights_name</b></br>
 </td>
 <td></td>
 <td></td>
-<td> Insights basic auth password. If defined this will change, set, or remove the password in the insights configuration. To remove a password set this value to an empty string.
-</td>
-</tr>
-<tr>
-<td><b>auto_config</b></br>
-</td>
-<td></td>
-<td></td>
-<td> ['Attempt to auto-configure the network connection with Satellite or RHSM. Default is True.']</td>
-</tr>
-<tr>
-<td><b>authmethod</b></br>
-</td>
-<td></td>
-<td></td>
-<td> Authentication method for the Portal (BASIC, CERT). Default is BASIC. Note: when auto_config is enabled, CERT will be used if RHSM or Satellite is detected.
+<td> For now, this is just 'insights-client', but it could change in the future so having it as a variable is just preparing for that.
 </td>
 </tr>
 <tr>
@@ -63,11 +48,18 @@ insights_config - This module handles initial configuration of the insights clie
 </td>
 </tr>
 <tr>
-<td><b>insights_name</b></br>
+<td><b>auto_config</b></br>
 </td>
 <td></td>
 <td></td>
-<td> For now, this is just 'insights-client', but it could change in the future so having it as a variable is just preparing for that.
+<td> [u'Attempt to auto-configure the network connection with Satellite or RHSM. Default is True.']</td>
+</tr>
+<tr>
+<td><b>authmethod</b></br>
+</td>
+<td></td>
+<td></td>
+<td> Authentication method for the Portal (BASIC, CERT). Default is BASIC. Note: when auto_config is enabled, CERT will be used if RHSM or Satellite is detected.
 </td>
 </tr>
 <tr>
@@ -76,6 +68,14 @@ insights_config - This module handles initial configuration of the insights clie
 <td></td>
 <td></td>
 <td> This set an optional proxy for the insights client to connect through if the client is behind a firewall or requires a proxy. Default is unspecified (none).
+</td>
+</tr>
+<tr>
+<td><b>password</b></br>
+</td>
+<td></td>
+<td></td>
+<td> Insights basic auth password. If defined this will change, set, or remove the password in the insights configuration. To remove a password set this value to an empty string.
 </td>
 </tr>
 </table>
