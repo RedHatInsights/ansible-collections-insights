@@ -149,7 +149,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 if next_page:
                     url = format_url(self.server, next_page, filter_tags)
                 else:
-                    url = None
+                    url = None 
         if get_system_advisories:
             results = add_patching_data(results,"advisories")
         if get_system_packages:
