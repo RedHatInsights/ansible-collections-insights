@@ -44,6 +44,10 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+      - name: Install python2.7 deps
+        if: ${{ matrix.python == '2.7' }}
+        run: pip install pathlib 
+
       # Install the head of the given branch (devel, stable-2.10)
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
