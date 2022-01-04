@@ -19,11 +19,10 @@ jobs:
           # It's important that Sanity is tested against all stable-X.Y branches
           # Testing against `devel` may fail as new tests are added.
         # - stable-2.9 # Only if your collection supports Ansible 2.9
-          - stable-2.11
-          - stable-2.10
+          - stable-2.12
+          - devel
         python:
-          - 2.7
-          - 3.7
+          - 3.8
     runs-on: ubuntu-latest
     steps:
 
@@ -39,10 +38,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-
-      - name: Install python2.7 deps
-        if: ${{ matrix.python == '2.7' }}
-        run: pip install pathlib 
 
       # Install the head of the given branch (devel, stable-2.10)
       - name: Install ansible-base (${{ matrix.ansible }})
