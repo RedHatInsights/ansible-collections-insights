@@ -30,6 +30,10 @@ DOCUMENTATION = '''
       server:
         description: Inventory server to connect to
         default: https://cloud.redhat.com
+      selection:
+        description: Choose what variable to use for ansible_host
+        default: fqdn
+        type: str
       staleness:
         description: Choose what hosts to return, based on staleness
         default: [ 'fresh', 'stale', 'unknown' ]
@@ -176,6 +180,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         strict = self.get_option('strict')
         get_patches = self.get_option('get_patches')
         staleness = self.get_option('staleness')
+        selection = self.get_option('selection')
         vars_prefix = self.get_option('vars_prefix')
         get_tags = self.get_option('get_tags')
         filter_tags = self.get_option('filter_tags')
@@ -232,7 +237,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             systems_by_id[host['id']] = host_name
             for item in host.keys():
                 self.inventory.set_variable(host_name, vars_prefix + item, host[item])
-                if item == 'fqdn':
+                if item == selection:
                     self.inventory.set_variable(host_name, 'ansible_host', host[item])
 
             if get_patches:
