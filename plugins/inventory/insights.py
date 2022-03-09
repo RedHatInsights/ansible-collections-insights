@@ -174,7 +174,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 per_page = response.json()['per_page']
                 page = response.json()['page']
                 if per_page * (page - 1) + count < total:
-                    url = "%s&page=%s" % (first_url, (page + 1))
+                    url = "%s/%s&page=%s" % (self.server, first_url, (page + 1))
                 else:
                     url = None
         return results
