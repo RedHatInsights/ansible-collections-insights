@@ -174,7 +174,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 per_page = response.json()['per_page']
                 page = response.json()['page']
                 if per_page * (page - 1) + count < total:
-                    url = "%s&page=%s" % (first_url, (page + 1))
+                    url = "%s/%s&page=%s" % (self.server, first_url, (page + 1))
                 else:
                     url = None
         return results
@@ -243,9 +243,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 per_page = response.json()['per_page']
                 page = response.json()['page']
                 if per_page * (page - 1) + count < total:
-                    url = "%s&page=%s" % (url, (page + 1))
+                    url = "%s/%s&page=%s" % (self.server, url, (page + 1))
                     if len(filter_tags) > 0:
-                        url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
+                        url = "%s/%s&tags=%s" % (self.server, url, '&tags='.join(filter_tags))
                 else:
                     url = None
 
