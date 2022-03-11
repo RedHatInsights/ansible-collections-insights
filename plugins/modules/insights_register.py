@@ -146,7 +146,7 @@ def run_module():
 
     if state == 'absent':
         result['original_message'] = 'Attempting to unregister ' + insights_name
-        if reg_status is not 0:
+        if reg_status != 0:
             result['changed'] = False
             result['message'] = insights_name + ' is already unregistered'
             module.exit_json(**result)
