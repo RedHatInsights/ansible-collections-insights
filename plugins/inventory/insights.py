@@ -278,7 +278,13 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                     self.inventory.set_variable(host_name, vars_prefix + 'patching', {'enabled': False})
 
         if get_tags:
-            system_tags = self.get_tags(systems_by_id.keys())
+            system_tags = {}
+            systems_by_id_list = list(systems_by_id.keys())
+            chunk_size=20
+            systems_by_id_list_split=[systems_by_id_list[i:i + chunk_size] for i in range(0, len(systems_by_id_list), chunk_size)]
+            for items in systems_by_id_list_split:
+                partial_system_tags = self.get_tags(items)
+                system_tags = {**system_tags, **partial_system_tags}
 
         for uuid in systems_by_id:
             host_name = systems_by_id[uuid]
