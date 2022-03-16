@@ -114,27 +114,29 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
     NAME = 'redhat.insights.insights'
 
-    def get_patches(self, stale, get_system_advisories,get_system_packages,filter_tags):
-        def get_system_patching_info(system_id,info):
+    def get_patches(self, stale, get_system_advisories, get_system_packages, filter_tags):
+        def get_system_patching_info(system_id, info):
             query = "api/patch/v1/export/systems"
             url = "%s/%s/%s/%s" % (self.server, query, system_id, info)
             response = self.session.get(url, auth=self.auth, headers=self.headers)
             if response.status_code != 200:
-                raise AnsibleError("http error (%s): %s" %
-                                    (response.status_code, response.text))
+                raise AnsibleError("http error (%s): %s" % (response.status_code, response.text))
             system_patching_info = response.json()
             return system_patching_info
-        def format_url(server,api_call,filter_tags):
+
+        def format_url(server, api_call, filter_tags):
             url = "%s/%s" % (server, api_call)
             if len(filter_tags) > 0:
                 url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
             return url
-        def add_patching_data(results,patching_info):
+
+        def add_patching_data(results, patching_info):
             for result in results:
                 id = result['id']
-                patching_info_result = get_system_patching_info(id,patching_info)
+                patching_info_result = get_system_patching_info(id, patching_info)
                 result['attributes'][patching_info] = patching_info_result
             return results
+
         query = "api/patch/v1/systems?filter[stale]=%s" % stale
         url = format_url(self.server, query, filter_tags)
         results = []
@@ -149,11 +151,11 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 if next_page:
                     url = format_url(self.server, next_page, filter_tags)
                 else:
-                    url = None 
+                    url = None
         if get_system_advisories:
-            results = add_patching_data(results,"advisories")
+            results = add_patching_data(results, "advisories")
         if get_system_packages:
-            results = add_patching_data(results,"packages")
+            results = add_patching_data(results, "packages")
         return results
 
     def get_tags(self, ids):
@@ -250,8 +252,10 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                     url = None
 
         if get_patching_info:
-            stale_patches = self.get_patches(stale=True,get_system_advisories=get_system_advisories,get_system_packages=get_system_packages,filter_tags=filter_tags)
-            patches = self.get_patches(stale=False,get_system_advisories=get_system_advisories,get_system_packages=get_system_packages,filter_tags=filter_tags)
+            stale_patches = self.get_patches(stale=True, get_system_advisories=get_system_advisories,
+                                             get_system_packages=get_system_packages, filter_tags=filter_tags)
+            patches = self.get_patches(stale=False, get_system_advisories=get_system_advisories,
+                                       get_system_packages=get_system_packages, filter_tags=filter_tags)
             patching_results = patches + stale_patches
             patching = {}
 
@@ -280,8 +284,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         if get_tags:
             system_tags = {}
             systems_by_id_list = list(systems_by_id.keys())
-            chunk_size=20
-            systems_by_id_list_split=[systems_by_id_list[i:i + chunk_size] for i in range(0, len(systems_by_id_list), chunk_size)]
+            chunk_size = 20
+            systems_by_id_list_split = [systems_by_id_list[i:i + chunk_size] for i in range(0, len(systems_by_id_list), chunk_size)]
             for items in systems_by_id_list_split:
                 partial_system_tags = self.get_tags(items)
                 system_tags = {**system_tags, **partial_system_tags}
