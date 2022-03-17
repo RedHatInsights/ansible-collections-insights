@@ -8,7 +8,7 @@ DOCUMENTATION = '''
     requirements:
         - requests >= 1.1
     description:
-        - Get inventory hosts from the cloud.redhat.com inventory service.
+        - Get inventory hosts from the console.redhat.com inventory service.
         - Uses a YAML configuration file that ends with ``insights.(yml|yaml)``.
     extends_documentation_fragment:
         - constructed
@@ -29,7 +29,7 @@ DOCUMENTATION = '''
             - name: INSIGHTS_PASSWORD
       server:
         description: Inventory server to connect to
-        default: https://cloud.redhat.com
+        default: https://console.redhat.com
       selection:
         description: Choose what variable to use for ansible_host
         default: fqdn

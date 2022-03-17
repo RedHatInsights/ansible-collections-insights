@@ -6,7 +6,7 @@ insights - insights inventory source
 - [Examples](Examples)
 
 ## Synopsis
-- Get inventory hosts from the cloud.redhat.com inventory service.
+- Get inventory hosts from the console.redhat.com inventory service.
 - Uses a YAML configuration file that ends with ``insights.(yml|yaml)``.
 
 ## Requirements
