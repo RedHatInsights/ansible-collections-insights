@@ -26,6 +26,7 @@ jobs:
           - 2.7
           - 3.7
           - 3.8
+          - 3.9
         exclude:
           - python: 3.8  # blocked by ansible/ansible#70155
     runs-on: ubuntu-latest
