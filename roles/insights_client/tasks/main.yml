@@ -69,6 +69,7 @@
     dest: /etc/insights-client/tags.yaml
     content: "{{ insights_tags | to_nice_yaml }}"
     mode: og=r
+  become: true
   when: insights_tags is defined
   notify: Run insights-client
 
@@ -76,5 +77,6 @@
   file:
     path: /etc/insights-client/tags.yaml
     state: absent
+  become: true
   when: insights_tags is not defined
   notify: Run insights-client
