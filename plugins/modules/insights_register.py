@@ -95,6 +95,7 @@ message:
 
 from ansible.module_utils.basic import AnsibleModule
 import subprocess
+from subprocess import PIPE, run
 
 
 def run_module():
@@ -125,11 +126,14 @@ def run_module():
     display_name = module.params['display_name']
     force_reregister = module.params['force_reregister']
 
-    reg_status = subprocess.call([insights_name, '--status'])
+    command = [insights_name, '--status']
+    result_command = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+    reg_status = result_command.returncode
+    stdout = result_command.stdout
 
     if state == 'present':
         result['original_message'] = 'Attempting to register ' + insights_name
-        if reg_status == 0 and not force_reregister:
+        if reg_status == 0 and not force_reregister and 'unregistered' not in stdout:
             result['changed'] = False
             result['message'] = 'The Insights API has determined that this machine is already registered'
             module.exit_json(**result)
