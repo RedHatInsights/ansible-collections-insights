@@ -127,6 +127,7 @@ def run_module():
     force_reregister = module.params['force_reregister']
 
     command = [insights_name, '--status']
+
     result_command = Popen(command, stdout=PIPE, stderr=PIPE, universal_newlines=True)
     stdout = result_command.communicate()[0]
     reg_status = result_command.returncode
