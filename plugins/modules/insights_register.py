@@ -95,7 +95,7 @@ message:
 
 from ansible.module_utils.basic import AnsibleModule
 import subprocess
-from subprocess import PIPE, run
+from subprocess import PIPE, Popen
 
 
 def run_module():
@@ -127,9 +127,10 @@ def run_module():
     force_reregister = module.params['force_reregister']
 
     command = [insights_name, '--status']
-    result_command = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+
+    result_command = Popen(command, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+    stdout = result_command.communicate()[0]
     reg_status = result_command.returncode
-    stdout = result_command.stdout
 
     if state == 'present':
         result['original_message'] = 'Attempting to register ' + insights_name
