@@ -246,7 +246,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 if per_page * (page - 1) + count < total:
                     hosts_url = "%s&page=%s" % (url, (page + 1))
                     if len(filter_tags) > 0:
-                        hosts_url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
+                        hosts_url = "%s&tags=%s" % (hosts_url, '&tags='.join(filter_tags))
                 else:
                     hosts_url = None
 
