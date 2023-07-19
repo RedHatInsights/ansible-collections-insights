@@ -230,8 +230,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'), self.get_option('password'))
         self.session = requests.Session()
 
-        while url:
-            response = self.session.get(url, auth=self.auth, headers=self.headers)
+        hosts_url = url
+        while hosts_url:
+            response = self.session.get(hosts_url, auth=self.auth, headers=self.headers)
 
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
@@ -243,11 +244,11 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 per_page = response.json()['per_page']
                 page = response.json()['page']
                 if per_page * (page - 1) + count < total:
-                    url = "%s&page=%s" % (url, (page + 1))
+                    hosts_url = "%s&page=%s" % (url, (page + 1))
                     if len(filter_tags) > 0:
-                        url = "%s&tags=%s" % (url, '&tags='.join(filter_tags))
+                        hosts_url = "%s&tags=%s" % (hosts_url, '&tags='.join(filter_tags))
                 else:
-                    url = None
+                    hosts_url = None
 
         if get_patching_info:
             stale_patches = self.get_patches(stale=True,get_system_advisories=get_system_advisories,get_system_packages=get_system_packages,filter_tags=filter_tags)
