@@ -254,8 +254,18 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                     hosts_url = None
 
         if get_patching_info:
-            stale_patches = self.get_patches(stale=True, get_system_advisories=get_system_advisories, get_system_packages=get_system_packages, filter_tags=filter_tags)
-            patches = self.get_patches(stale=False, get_system_advisories=get_system_advisories, get_system_packages=get_system_packages, filter_tags=filter_tags)
+            stale_patches = self.get_patches(
+                stale=True,
+                get_system_advisories=get_system_advisories,
+                get_system_packages=get_system_packages,
+                filter_tags=filter_tags
+            )
+            patches = self.get_patches(
+                stale=False,
+                get_system_advisories=get_system_advisories,
+                get_system_packages=get_system_packages,
+                filter_tags=filter_tags
+            )
             patching_results = patches + stale_patches
             patching = {}
 
