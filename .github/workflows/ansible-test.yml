@@ -16,6 +16,7 @@ jobs:
   sanity:
     name: Sanity (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
+      fail-fast: false
       matrix:
         ansible:
           # It's important that Sanity is tested against all stable-X.Y branches
