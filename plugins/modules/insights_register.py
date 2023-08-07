@@ -144,7 +144,10 @@ def run_module():
             result['message'] = 'New machine-id created - ' + insights_name + ' has been registered'
             module.exit_json(**result)
         else:
-            subprocess.call([insights_name, '--register'])
+            if display_name:
+                subprocess.call([insights_name, '--register', '--display-name=' + display_name])
+            else:
+                subprocess.call([insights_name, '--register'])
             result['changed'] = True
             result['message'] = insights_name + ' has been registered'
             module.exit_json(**result)
