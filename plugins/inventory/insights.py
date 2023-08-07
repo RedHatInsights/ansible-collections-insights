@@ -285,7 +285,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             systems_by_id_list_split=[systems_by_id_list[i:i + chunk_size] for i in range(0, len(systems_by_id_list), chunk_size)]
             for items in systems_by_id_list_split:
                 partial_system_tags = self.get_tags(items)
-                system_tags = {**system_tags, **partial_system_tags}
+                system_tags.update(partial_system_tags)
 
         for uuid in systems_by_id:
             host_name = systems_by_id[uuid]
