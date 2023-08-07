@@ -50,20 +50,49 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           path: ansible_collections/redhat/insights
 
-      - name: Set up Python ${{ matrix.ansible }}
-        uses: actions/setup-python@v4
+      - name: Check out the branch
+        run: |
+          # Create a branch for the current HEAD, which happens to be a merge commit
+          git -C ansible_collections/redhat/insights checkout -b 'pull-request-${{ github.event.pull_request.number }}'
+
+          # Name the target branch
+          git -C ansible_collections/redhat/insights branch '${{
+            github.event.pull_request.base.ref
+          }}' --track 'origin/${{
+            github.event.pull_request.base.ref
+          }}'
+
+          # Show branch information
+          git -C ansible_collections/redhat/insights branch -vv
+
+      - name: Get git version
+        id: git-version
+        run: |
+          export version=$(git -C ansible_collections/redhat/insights describe --tags | grep -Po '\d+\.\d+\.\d+')
+          echo "git_version=$version" >> $GITHUB_OUTPUT
+
+      - name: Generate galaxy.yml
+        uses: cuchi/jinja2-action@v1.2.0
         with:
-          python-version: ${{ matrix.python }}
+          template: ansible_collections/redhat/insights/galaxy.yml.j2
+          output_file: ansible_collections/redhat/insights/galaxy.yml
+          strict: true
+          variables: |
+            collection_name=insights
+            collection_namespace=${{ github.repository_owner }}
+            collection_repo=https://github.com/${{ github.repository }}
+            collection_version=${{ steps.git-version.outputs.git_version }}
 
-      # Install the head of the given branch (devel, stable-2.10)
-      - name: Install ansible-base (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
-
-      # run ansible-test sanity inside of Docker.
-      # The docker container has all the pinned dependencies that are required.
-      # Explicity specify the version of Python we want to test
       - name: Run sanity tests
-        run: ansible-test sanity --docker -v --color --python ${{ matrix.python }}
-        working-directory: ./ansible_collections/redhat/insights
+        uses: ansible-community/ansible-test-gh-action@release/v1
+        with:
+          ansible-core-github-repository-slug: ${{ contains(fromJson('["2.9", "2.10", "2.11"]'), matrix.ansible) && 'felixfontein/ansible' || 'ansible/ansible' }}
+          ansible-core-version: stable-${{ matrix.ansible }}
+          collection-src-directory: ${{ github.workspace }}/ansible_collections/redhat/insights
+          coverage: ${{ github.event_name == 'schedule' && 'always' || 'never' }}
+          pull-request-change-detection: 'true'
+          target-python-version: ${{ matrix.python }}
+          testing-type: sanity
