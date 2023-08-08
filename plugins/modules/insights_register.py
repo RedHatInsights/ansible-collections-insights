@@ -131,7 +131,8 @@ def run_module():
     result_command = Popen(command, stdout=PIPE, stderr=PIPE, universal_newlines=True)
     stdout = result_command.communicate()[0]
     reg_status = result_command.returncode
-
+    register_args = [insights_name]
+    
     if state == 'present':
         result['original_message'] = 'Attempting to register ' + insights_name
         if reg_status == 0 and not force_reregister and 'unregistered' not in stdout:
@@ -139,15 +140,18 @@ def run_module():
             result['message'] = 'The Insights API has determined that this machine is already registered'
             module.exit_json(**result)
         elif reg_status == 0 and force_reregister:
-            subprocess.call([insights_name, '--force-reregister'])
+            register_args.extend(['--force-reregister'])
+            if display_name:
+                register_args.extend(['--display-name', display_name])    
+            subprocess.call(register_args)
             result['changed'] = True
             result['message'] = 'New machine-id created - ' + insights_name + ' has been registered'
             module.exit_json(**result)
         else:
+            register_args.extend(['--register'])            
             if display_name:
-                subprocess.call([insights_name, '--register', '--display-name=' + display_name])
-            else:
-                subprocess.call([insights_name, '--register'])
+                register_args.extend(['--display-name', display_name])            
+            subprocess.call(register_args)
             result['changed'] = True
             result['message'] = insights_name + ' has been registered'
             module.exit_json(**result)
@@ -159,7 +163,8 @@ def run_module():
             result['message'] = insights_name + ' is already unregistered'
             module.exit_json(**result)
         else:
-            subprocess.call([insights_name, '--unregister'])
+            register_args.extend(['--unregister'])         
+            subprocess.call(register_args)            
             result['changed'] = True
             result['message'] = insights_name + ' has been unregistered'
             module.exit_json(**result)
