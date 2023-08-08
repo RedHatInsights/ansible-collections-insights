@@ -132,7 +132,7 @@ def run_module():
     stdout = result_command.communicate()[0]
     reg_status = result_command.returncode
     register_args = [insights_name]
-    
+
     if state == 'present':
         result['original_message'] = 'Attempting to register ' + insights_name
         if reg_status == 0 and not force_reregister and 'unregistered' not in stdout:
@@ -142,15 +142,15 @@ def run_module():
         elif reg_status == 0 and force_reregister:
             register_args.extend(['--force-reregister'])
             if display_name:
-                register_args.extend(['--display-name', display_name])    
+                register_args.extend(['--display-name', display_name])
             subprocess.call(register_args)
             result['changed'] = True
             result['message'] = 'New machine-id created - ' + insights_name + ' has been registered'
             module.exit_json(**result)
         else:
-            register_args.extend(['--register'])            
+            register_args.extend(['--register'])
             if display_name:
-                register_args.extend(['--display-name', display_name])            
+                register_args.extend(['--display-name', display_name])
             subprocess.call(register_args)
             result['changed'] = True
             result['message'] = insights_name + ' has been registered'
@@ -163,8 +163,8 @@ def run_module():
             result['message'] = insights_name + ' is already unregistered'
             module.exit_json(**result)
         else:
-            register_args.extend(['--unregister'])         
-            subprocess.call(register_args)            
+            register_args.extend(['--unregister'])
+            subprocess.call(register_args)
             result['changed'] = True
             result['message'] = insights_name + ' has been unregistered'
             module.exit_json(**result)
