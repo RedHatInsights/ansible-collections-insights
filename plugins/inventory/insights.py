@@ -3,7 +3,6 @@ __metaclass__ = type
 
 DOCUMENTATION = '''
     name: insights
-    plugin_type: inventory
     short_description: insights inventory source
     requirements:
         - requests >= 1.1
@@ -15,16 +14,16 @@ DOCUMENTATION = '''
     options:
       plugin:
         description: the name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as it's own.
-        required: True
+        required: true
         choices: ['redhat.insights.insights']
       user:
         description: Red Hat username
-        required: True
+        required: true
         env:
             - name: INSIGHTS_USER
       password:
         description: Red Hat password
-        required: True
+        required: true
         env:
             - name: INSIGHTS_PASSWORD
       server:
@@ -38,6 +37,7 @@ DOCUMENTATION = '''
         description: Choose what hosts to return, based on staleness
         default: [ 'fresh', 'stale', 'unknown' ]
         type: list
+        elements: str
       registered_with:
         description: Filter out any host not registered with the specified service
         default: insights
@@ -48,29 +48,30 @@ DOCUMENTATION = '''
         type: str
       get_patches:
         description: Fetch patching information for each system.
-        required: False
+        required: false
         type: bool
-        default: False
+        default: false
       get_system_advisories:
         description: Fetch advisories information for each system. If enabled will also fetch pathching information.
-        required: False
+        required: false
         type: bool
-        default: False
+        default: false
       get_system_packages:
         description: Fetch packages information for each system. If enabled will also fetch pathching information.
-        required: False
+        required: false
         type: bool
-        default: False
+        default: false
       get_tags:
         description: Fetch tag data for each system.
-        required: False
+        required: false
         type: bool
-        default: False
+        default: false
       filter_tags:
         description: Filter hosts with given tags
-        required: False
+        required: false
         type: list
         default: []
+        elements: str
 '''
 
 EXAMPLES = '''
@@ -79,7 +80,7 @@ plugin: redhat.insights.insights
 
 # create groups for patching
 plugin: redhat.insights.insights
-get_patches: yes
+get_patches: true
 groups:
   patching: insights_patching.enabled
   stale: insights_patching.stale
@@ -89,7 +90,7 @@ groups:
 
 # filter host by tags and create groups from tags
 plugin: redhat.insights.insights
-get_tags: True
+get_tags: true
 filter_tags:
   - insights-client/env=prod
 keyed_groups:
