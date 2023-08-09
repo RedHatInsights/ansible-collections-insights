@@ -103,7 +103,7 @@ def run_module():
     module_args = dict(
         state=dict(choices=['present', 'absent'], default='present'),
         insights_name=dict(type='str', required=False, default='insights-client'),
-        display_name=dict(type='str', required=False, default=''),
+        display_name=dict(type='str', required=False, default=None),
         force_reregister=dict(type='bool', required=False, default=False)
     )
 
