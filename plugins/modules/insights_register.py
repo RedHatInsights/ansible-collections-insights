@@ -135,26 +135,23 @@ def run_module():
 
     if state == 'present':
         result['original_message'] = 'Attempting to register ' + insights_name
-        if reg_status == 0 and not force_reregister and 'unregistered' not in stdout:
-            result['changed'] = False
-            result['message'] = 'The Insights API has determined that this machine is already registered'
-            module.exit_json(**result)
-        elif reg_status == 0 and force_reregister:
-            register_args.extend(['--force-reregister'])
-            if display_name:
-                register_args.extend(['--display-name', display_name])
-            subprocess.call(register_args)
-            result['changed'] = True
+        if reg_status == 0 and 'unregistered' not in stdout:
+            if force_reregister:
+                subprocess.call(register_args, '--unregister')
+            else:
+                result['changed'] = False
+                result['message'] = 'The Insights API has determined that this machine is already registered'
+                module.exit_json(**result)
+        if display_name:
+            register_args.extend(['--display-name', display_name])
+        register_args.extend('--register')
+        subprocess.call(register_args)
+        result['changed'] = True
+        if force_reregister:
             result['message'] = 'New machine-id created - ' + insights_name + ' has been registered'
-            module.exit_json(**result)
         else:
-            register_args.extend(['--register'])
-            if display_name:
-                register_args.extend(['--display-name', display_name])
-            subprocess.call(register_args)
-            result['changed'] = True
             result['message'] = insights_name + ' has been registered'
-            module.exit_json(**result)
+        module.exit_json(**result)
 
     if state == 'absent':
         result['original_message'] = 'Attempting to unregister ' + insights_name
