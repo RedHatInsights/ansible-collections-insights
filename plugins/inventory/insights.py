@@ -5,7 +5,7 @@ DOCUMENTATION = '''
     name: insights
     short_description: insights inventory source
     requirements:
-        - requests >= 1.1
+        - requests
     description:
         - Get inventory hosts from the console.redhat.com inventory service.
         - Uses a YAML configuration file that ends with ``insights.(yml|yaml)``.
@@ -100,14 +100,11 @@ keyed_groups:
 
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
 from ansible.errors import AnsibleError
-from distutils.version import LooseVersion
 
 try:
     import requests
-    if LooseVersion(requests.__version__) < LooseVersion('1.1.0'):
-        raise ImportError
 except ImportError:
-    raise AnsibleError('This script requires python-requests 1.1 as a minimum version')
+    raise AnsibleError('This script requires python-requests')
 
 
 class InventoryModule(BaseInventoryPlugin, Constructable):
