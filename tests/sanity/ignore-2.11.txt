@@ -1,4 +1,1 @@
 roles/insights_client/files/insights.fact shebang
-plugins/inventory/insights.py import-2.7 # needs 'requests'
-plugins/inventory/insights.py import-3.6 # needs 'requests'
-plugins/inventory/insights.py import-3.9 # needs 'requests'
