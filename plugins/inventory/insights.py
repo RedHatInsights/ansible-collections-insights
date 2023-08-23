@@ -100,11 +100,14 @@ keyed_groups:
 
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
 from ansible.errors import AnsibleError
+from ansible.module_utils.six import raise_from
 
 try:
     import requests
-except ImportError:
-    raise AnsibleError('This script requires python-requests')
+except ImportError as exc:
+    REQUESTS_IMPORT_ERROR = exc
+else:
+    REQUESTS_IMPORT_ERROR = None
 
 
 class InventoryModule(BaseInventoryPlugin, Constructable):
@@ -200,6 +203,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         return valid
 
     def parse(self, inventory, loader, path, cache=True):
+        if REQUESTS_IMPORT_ERROR:
+            raise_from(AnsibleError('`requests` must be installed to use this plugin'), REQUESTS_IMPORT_ERROR)
         super(InventoryModule, self).parse(inventory, loader, path)
         self._read_config_data(path)
 
