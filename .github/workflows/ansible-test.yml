@@ -84,6 +84,7 @@ jobs:
 
           # Show branch information
           git -C ansible_collections/redhat/insights branch -vv
+        if: github.event_name == 'pull_request'
 
       - name: Get git version
         id: git-version
