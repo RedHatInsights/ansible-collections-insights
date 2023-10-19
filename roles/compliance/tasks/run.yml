@@ -1,3 +1,4 @@
 ---
 - name: run compliance scan
-  command: insights-client --compliance
+  become: true
+  ansible.builtin.command: insights-client --compliance
