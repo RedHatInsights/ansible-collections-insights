@@ -1,0 +1,15 @@
+import os
+import sys
+
+import jinja2
+
+
+env = jinja2.Environment()
+with open(sys.argv[1]) as f:
+    tmpl = env.from_string(f.read())
+context = {}
+for key, value in os.environ.items():
+    if key.startswith("JINJA_"):
+        context[key[6:]] = value
+with open(sys.argv[2], "w") as f:
+    print(tmpl.render(context), file=f)

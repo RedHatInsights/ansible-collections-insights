@@ -93,16 +93,16 @@ jobs:
           echo "git_version=$version" >> $GITHUB_OUTPUT
 
       - name: Generate galaxy.yml
-        uses: cuchi/jinja2-action@v1.2.1
-        with:
-          template: ansible_collections/redhat/insights/galaxy.yml.j2
-          output_file: ansible_collections/redhat/insights/galaxy.yml
-          strict: true
-          variables: |
-            collection_name=insights
-            collection_namespace=${{ github.repository_owner }}
-            collection_repo=https://github.com/${{ github.repository }}
-            collection_version=${{ steps.git-version.outputs.git_version }}
+        run: |
+          set -euxo pipefail
+          sudo apt-get --no-install-recommends -y install python3 python3-jinja2
+          python3 .github/scripts/jinja2-replace galaxy.yml.j2 galaxy.yml
+        working-directory: ansible_collections/redhat/insights
+        env:
+          JINJA_collection_name: insights
+          JINJA_collection_namespace: ${{ github.repository_owner }}
+          JINJA_collection_repo: https://github.com/${{ github.repository }}
+          JINJA_collection_version: ${{ steps.git-version.outputs.git_version }}
 
       - name: Run sanity tests
         uses: ansible-community/ansible-test-gh-action@release/v1
