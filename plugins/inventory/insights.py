@@ -13,7 +13,7 @@ DOCUMENTATION = '''
         - constructed
     options:
       plugin:
-        description: the name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as it's own.
+        description: the name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as its own.
         required: true
         choices: ['redhat.insights.insights']
       user:
@@ -52,12 +52,12 @@ DOCUMENTATION = '''
         type: bool
         default: false
       get_system_advisories:
-        description: Fetch advisories information for each system. If enabled will also fetch pathching information.
+        description: Fetch advisories information for each system. If enabled will also fetch patching information.
         required: false
         type: bool
         default: false
       get_system_packages:
-        description: Fetch packages information for each system. If enabled will also fetch pathching information.
+        description: Fetch packages information for each system. If enabled will also fetch patching information.
         required: false
         type: bool
         default: false

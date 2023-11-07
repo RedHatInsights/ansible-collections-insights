@@ -68,7 +68,7 @@ EXAMPLES = '''
 
 # Unregister
 - name: Unregister the insights client
-  insights_regsiter:
+  insights_register:
     state: absent
 
 # Register an install of redhat-access-insights (this is not a 100% automated process)
