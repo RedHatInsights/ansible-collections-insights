@@ -7,7 +7,7 @@ Requirements
 ------------
 - The Insights client must be installed and configured prior to using the compliance service. See the [insights_client](../insights_client/README.md) role for automated deployment and configuration of the client. 
 
-- The host must me configured in the [Insights portal](https://console.redhat.com/insights/compliance) prior to running a compliance scan.
+- The host must be configured in the [Insights portal](https://console.redhat.com/insights/compliance) prior to running a compliance scan.
 
 Role Variables / Configuration
 --------------
