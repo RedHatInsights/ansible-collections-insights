@@ -52,6 +52,10 @@ jobs:
             python: '3.9'
           - ansible: '2.15'
             python: '3.11'
+          - ansible: '2.16'
+            python: '3.9'
+          - ansible: '2.16'
+            python: '3.11'
     # Ansible-test on various stable branches does not yet work well with cgroups v2.
     # Since ubuntu-latest now uses Ubuntu 22.04, we need to fall back to the ubuntu-20.04
     # image for these stable branches. The list of branches where this is necessary will
