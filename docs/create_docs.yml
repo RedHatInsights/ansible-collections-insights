@@ -1,28 +1,19 @@
 ---
 - hosts: localhost
+  connection: local
   gather_facts: no
 
   tasks:
-    - set_fact:
-        docs: "{{ lookup('file', '../plugins/inventory/insights.py') | regex_search(\"(?<=DOCUMENTATION\\s=\\s''')((.|\\n)*?)(?=''')\") | from_yaml}}"
-        examples: "{{ lookup('file', '../plugins/inventory/insights.py') | regex_search(\"(?<=EXAMPLES\\s=\\s''')((.|\\n)*?)(?=''')\") }}"
-
     - template:
         src: ./templates/docs.md.j2
-        dest: ./inventory.md
-
-    - set_fact:
-        docs: "{{ lookup('file', '../plugins/modules/insights_register.py') | regex_search(\"(?<=DOCUMENTATION\\s=\\s''')((.|\\n)*?)(?=''')\") | from_yaml}}"
-        examples: "{{ lookup('file', '../plugins/modules/insights_register.py') | regex_search(\"(?<=EXAMPLES\\s=\\s''')((.|\\n)*?)(?=''')\") }}"
-
-    - template:
-        src: ./templates/docs.md.j2
-        dest: ./insights_register.md
-
-    - set_fact:
-        docs: "{{ lookup('file', '../plugins/modules/insights_config.py') | regex_search(\"(?<=DOCUMENTATION\\s=\\s''')((.|\\n)*?)(?=''')\") | from_yaml}}"
-        examples: "{{ lookup('file', '../plugins/modules/insights_config.py') | regex_search(\"(?<=EXAMPLES\\s=\\s''')((.|\\n)*?)(?=''')\") }}"
-
-    - template:
-        src: ./templates/docs.md.j2
-        dest: ./insights_config.md
+        dest: "{{ item.output }}"
+      vars:
+        docs: "{{ lookup('file', '../' + item.file) | regex_search(\"(?<=DOCUMENTATION\\s=\\s''')((.|\\n)*?)(?=''')\") | from_yaml}}"
+        examples: "{{ lookup('file', '../' + item.file) | regex_search(\"(?<=EXAMPLES\\s=\\s''')((.|\\n)*?)(?=''')\") }}"
+      loop:
+        - file: 'plugins/inventory/insights.py'
+          output: 'inventory.md'
+        - file: 'plugins/modules/insights_register.py'
+          output: 'insights_register.md'
+        - file: 'plugins/modules/insights_config.py'
+          output: 'insights_config.md'
