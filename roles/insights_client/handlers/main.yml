@@ -1,4 +1,4 @@
 ---
 - name: Run insights-client
   command: insights-client
-  become: yes
+  become: true
