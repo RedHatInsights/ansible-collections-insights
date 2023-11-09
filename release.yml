@@ -50,6 +50,7 @@
       tags: publish
 
     - name: git cleanup
+      # noqa: command-instead-of-module the git module does not do 'clean'
       command:
         cmd: git reset --hard
       tags: cleanup
