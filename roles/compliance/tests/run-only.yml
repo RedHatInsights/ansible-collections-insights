@@ -1,6 +1,5 @@
 ---
 - hosts: all
-
   tasks:
     - name: run insights compliance
       import_role:
