@@ -77,9 +77,9 @@ EXAMPLES = '''
     state: present
     insights_name: 'redhat-access-insights'
 
-#Note: The above example for registering redhat-access-insights requires that the playbook be
-#changed to install redhat-access-insights and that redhat-access-insights is also passed into
-#the insights_config module and that the file paths be changed when using the file module
+# Note: The above example for registering redhat-access-insights requires that the playbook be
+# changed to install redhat-access-insights and that redhat-access-insights is also passed into
+# the insights_config module and that the file paths be changed when using the file module
 '''
 
 RETURN = '''
