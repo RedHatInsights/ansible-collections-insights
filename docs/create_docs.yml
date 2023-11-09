@@ -7,7 +7,7 @@
         src: ./templates/docs.md.j2
         dest: "{{ item.output }}"
       vars:
-        docs: "{{ lookup('file', '../' + item.file) | regex_search(\"(?<=DOCUMENTATION\\s=\\s''')((.|\\n)*?)(?=''')\") | from_yaml}}"
+        docs: "{{ lookup('file', '../' + item.file) | regex_search(\"(?<=DOCUMENTATION\\s=\\s''')((.|\\n)*?)(?=''')\") | from_yaml }}"
         examples: "{{ lookup('file', '../' + item.file) | regex_search(\"(?<=EXAMPLES\\s=\\s''')((.|\\n)*?)(?=''')\") }}"
       loop:
         - file: 'plugins/inventory/insights.py'
