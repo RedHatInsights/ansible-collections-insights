@@ -1,6 +1,6 @@
 ---
 name: galaxy-release
-on: 
+on:
   release:
     types:
       - published
@@ -21,7 +21,7 @@ jobs:
 
       - name: Install ansible-base
         run: pip install ansible
-      
+
       - name: Publish to galaxy
         run: ansible-playbook release.yml
           -e namespace=${{ github.repository_owner }}

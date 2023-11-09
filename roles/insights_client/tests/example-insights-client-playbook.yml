@@ -3,5 +3,5 @@
   collections:
     - redhatinsights.insights
   tasks:
-    - include_role: 
+    - include_role:
         name: insights_client
