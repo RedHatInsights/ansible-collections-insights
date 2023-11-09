@@ -1,6 +1,6 @@
 ---
 plugin: redhat.insights.insights
-get_patches: yes
+get_patches: true
 groups:
   patching: insights_patching.enabled
   stale: insights_patching.stale
