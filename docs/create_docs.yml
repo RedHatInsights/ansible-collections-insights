@@ -2,7 +2,6 @@
 - hosts: localhost
   connection: local
   gather_facts: false
-
   tasks:
     - template:
         src: ./templates/docs.md.j2
