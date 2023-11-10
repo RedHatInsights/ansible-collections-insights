@@ -29,6 +29,7 @@
       template:
         src: "{{ playbook_dir }}/galaxy.yml.j2"
         dest: "{{ playbook_dir }}/galaxy.yml"
+        mode: "u=rw,go=r"
 
     - name: Build collection
       command:

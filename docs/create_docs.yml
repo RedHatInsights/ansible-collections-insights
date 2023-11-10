@@ -8,6 +8,7 @@
       template:
         src: ./templates/docs.md.j2
         dest: "{{ item.output }}"
+        mode: "u=rw,go=r"
       vars:
         # yamllint disable rule:line-length
         docs: "{{ lookup('file', '../' + item.file) | regex_search(\"(?<=DOCUMENTATION\\s=\\s''')((.|\\n)*?)(?=''')\") | from_yaml }}"
