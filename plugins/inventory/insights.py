@@ -13,7 +13,8 @@ DOCUMENTATION = '''
         - constructed
     options:
       plugin:
-        description: the name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as its own.
+        description: >
+          The name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as its own.
         required: true
         choices: ['redhat.insights.insights']
       user:
@@ -43,7 +44,7 @@ DOCUMENTATION = '''
         default: insights
         type: str
       vars_prefix:
-        description: prefix to apply to host variables
+        description: Prefix to apply to host variables
         default: insights_
         type: str
       get_patches:
