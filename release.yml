@@ -42,18 +42,21 @@
       command:
         cmd: "ansible-galaxy collection install {{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz -p ~/.ansible/collections/"
         chdir: "{{ playbook_dir }}"
+      changed_when: true
       tags: install
 
     - name: Publish collection
       command:
         cmd: "ansible-galaxy collection publish --api-key={{ api_key }} {{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
         chdir: "{{ playbook_dir }}"
+      changed_when: true
       tags: publish
 
     - name: Git cleanup
       # noqa: command-instead-of-module the git module does not do 'clean'
       command:
         cmd: git reset --hard
+      changed_when: true
       tags: cleanup
 
     - name: Remove galaxy.yml

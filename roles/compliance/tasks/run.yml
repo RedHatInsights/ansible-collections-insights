@@ -1,3 +1,4 @@
 ---
 - name: Run compliance scan
   command: insights-client --compliance
+  changed_when: true
