@@ -43,9 +43,7 @@ Supply values for various configuration options that you would like to use. On i
 </td>
 <td></td>
 <td></td>
-<td><ul>
-<li>Attempt to auto-configure the network connection with Satellite or RHSM. Default is True.</li>
-</ul>
+<td>Attempt to auto-configure the network connection with Satellite or RHSM. Default is True.
 </td>
 </tr>
 <tr>

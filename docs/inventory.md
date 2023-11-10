@@ -32,7 +32,8 @@ insights - insights inventory source
 </ul>
 </td>
 <td></td>
-<td>the name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as its own.</td>
+<td>The name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as its own.
+</td>
 </tr>
 <tr>
 <td><b>user</b></br>
@@ -90,7 +91,7 @@ insights</td>
 <td><b>Default:</b><br>
 insights_</td>
 <td></td>
-<td>prefix to apply to host variables</td>
+<td>Prefix to apply to host variables</td>
 </tr>
 <tr>
 <td><b>get_patches</b></br>
