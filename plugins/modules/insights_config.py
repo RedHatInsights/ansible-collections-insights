@@ -25,8 +25,8 @@ options:
       in the insights configuration. To remove a password set this value to an empty string.
     required: false
   auto_config:
-    description:
-    - Attempt to auto-configure the network connection with Satellite or RHSM. Default is True.
+    description: >
+      Attempt to auto-configure the network connection with Satellite or RHSM. Default is True.
     required: false
   authmethod:
     description: >

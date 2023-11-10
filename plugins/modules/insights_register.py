@@ -22,8 +22,8 @@ description: >
 
 options:
   state:
-    description:
-      - Determines whether to register or unregister insights-client
+    description: >
+      Determines whether to register or unregister insights-client
     choices: [ present, absent ]
     default: present
     type: str
