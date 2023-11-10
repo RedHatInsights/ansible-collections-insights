@@ -33,9 +33,7 @@ This module will check the current registration status, unregister if needed, an
 <b>Default:</b><br>
 present</td>
 <td></td>
-<td><ul>
-<li>Determines whether to register or unregister insights-client</li>
-</ul>
+<td>Determines whether to register or unregister insights-client
 </td>
 </tr>
 <tr>
