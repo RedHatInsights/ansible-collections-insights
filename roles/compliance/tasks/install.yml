@@ -1,5 +1,5 @@
 ---
-- name: install openscap packages
+- name: Install OpenSCAP packages
   yum:
     name:
       - openscap
