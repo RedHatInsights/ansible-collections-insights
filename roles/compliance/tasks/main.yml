@@ -1,8 +1,11 @@
 ---
-- name: check for insights configuration
+- name: Check for Insights configuration
   assert:
     that: ansible_local.insights is defined
     fail_msg: Unable to find insights fact. Have you installed the insights client?
 
-- include_tasks: install.yml
-- include_tasks: run.yml
+- name: Include install tasks
+  include_tasks: install.yml
+
+- name: Include run tasks
+  include_tasks: run.yml

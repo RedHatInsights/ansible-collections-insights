@@ -1,7 +1,8 @@
 ---
-- hosts: all
+- name: Install-only test of compliance role
+  hosts: all
   tasks:
-    - name: install insights compliance
+    - name: Install Insights compliance
       import_role:
         name: redhat.insights.compliance
         tasks_from: install

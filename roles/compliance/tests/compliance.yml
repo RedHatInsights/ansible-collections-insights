@@ -1,6 +1,7 @@
 ---
-- hosts: all
+- name: Simple test of compliance role
+  hosts: all
   tasks:
-    - name: insights compliance
+    - name: Insights compliance
       import_role:
         name: redhat.insights.compliance

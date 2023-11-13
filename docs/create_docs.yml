@@ -1,9 +1,11 @@
 ---
-- hosts: localhost
+- name: Generate documentations
+  hosts: localhost
   connection: local
   gather_facts: false
   tasks:
-    - template:
+    - name: Generate docs from docs.md.j2
+      template:
         src: ./templates/docs.md.j2
         dest: "{{ item.output }}"
       vars:

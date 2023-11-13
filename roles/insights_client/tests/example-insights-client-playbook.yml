@@ -1,7 +1,9 @@
 ---
-- hosts: all
+- name: Simple test of insights_client role
+  hosts: all
   collections:
     - redhatinsights.insights
   tasks:
-    - include_role:
+    - name: Include insights_client role
+      include_role:
         name: insights_client

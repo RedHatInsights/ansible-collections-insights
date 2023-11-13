@@ -56,7 +56,7 @@
     path: /etc/ansible/facts.d
   become: true
 
-- name: Install custom insights fact
+- name: Install custom Insights fact
   copy:
     src: insights.fact
     dest: /etc/ansible/facts.d
