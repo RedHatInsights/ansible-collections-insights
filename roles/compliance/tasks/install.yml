@@ -1,6 +1,7 @@
 ---
 - name: install openscap packages
-  yum:
+  become: true
+  ansible.builtin.yum:
     name:
       - openscap
       - scap-security-guide
