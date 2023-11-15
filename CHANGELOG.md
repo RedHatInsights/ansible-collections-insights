@@ -5,7 +5,7 @@ that have any kind of impact on users, such as new & removed features, behaviour
 changes, and bug fixes. Internal changes such as for CI, style/lint, and so on
 are purposely not mentioned here.
 
-## [unreleased]
+## [1.1.0]
 ### Changed
 - There is no more a maximum supported version of Ansible for the collection,
   which now supports Ansible 2.9 and greater; the collection should generally
