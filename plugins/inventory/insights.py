@@ -76,10 +76,10 @@ DOCUMENTATION = '''
 '''
 
 EXAMPLES = '''
-# basic example using environment vars for auth
+# Basic example using environment variables for authentication
 plugin: redhat.insights.insights
 
-# create groups for patching
+# Create groups for patching
 plugin: redhat.insights.insights
 get_patches: true
 groups:
@@ -89,7 +89,7 @@ groups:
   security_patch: insights_patching.rhsa_count > 0
   enhancement_patch: insights_patching.rhea_count > 0
 
-# filter host by tags and create groups from tags
+# Filter host by tags and create groups from tags
 plugin: redhat.insights.insights
 get_tags: true
 filter_tags:

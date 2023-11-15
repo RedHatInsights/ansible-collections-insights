@@ -54,24 +54,28 @@ author:
 '''
 
 EXAMPLES = '''
-- name: Configure the insights client to register with username and password stored in Ansible Tower Custom Credential
+# Configure the insights client to register with RHSM and no display name;
+# the insights_config module is used without parameters: this is because
+# auto_config defaults to true, which in turn forces the client to try RHSM
+# (or Satellite)
+- name: Configure the insights client
+  insights_config:
+  become: true
+
+# Configure the insights client to register with RHSM and a display name
+- name: Configure the insights client
+  insights_config:
+    display_name: "{{ insights_display_name }}"
+  become: true
+
+# Configure the insights client to register with username and password stored
+# as environment variables in the Ansible controller
+- name: Configure the insights client
   insights_config:
     username: "{{ lookup('env', INSIGHTS_USER) }}"
     password: "{{ lookup('env', INSIGHTS_PASSWORD) }}"
     auto_config: "{{ auto_config }}"
     authmethod: "{{ authmethod }}"
     proxy: "{{ insights_proxy }}"
-  become: true
-
-- name: Configure the insights client to register with RHSM and no display name
-  insights_config:
-  become: true
-
-# Note: The above example calls the insights_config module with no parameters. This is because auto_config defaults to True
-# which in turn forces the client to try RHSM (or Satellite)
-
-- name: Configure the insights client to register with RHSM and a display name
-  insights_config:
-    display_name: "{{ insights_display_name }}"
   become: true
 '''
