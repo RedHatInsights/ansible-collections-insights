@@ -38,13 +38,7 @@ jobs:
             python: '3.9'
           - ansible: '2.16'
             python: '3.11'
-    # Ansible-test on various stable branches does not yet work well with cgroups v2.
-    # Since ubuntu-latest now uses Ubuntu 22.04, we need to fall back to the ubuntu-20.04
-    # image for these stable branches. The list of branches where this is necessary will
-    # shrink over time, check out https://github.com/ansible-collections/news-for-maintainers/issues/28
-    # for the latest list.
-    runs-on: >-
-      ${{ (contains(fromJson('["2.9", "2.10", "2.11"]'), matrix.ansible) || contains(fromJson('["2.7", "3.5", "3.6"]'), matrix.python)) && 'ubuntu-20.04' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     steps:
 
       # ansible-test requires the collection to be in a directory in the form
@@ -93,7 +87,6 @@ jobs:
       - name: Run sanity tests
         uses: ansible-community/ansible-test-gh-action@release/v1
         with:
-          ansible-core-github-repository-slug: ${{ contains(fromJson('["2.9", "2.10", "2.11"]'), matrix.ansible) && 'felixfontein/ansible' || 'ansible/ansible' }}
           ansible-core-version: stable-${{ matrix.ansible }}
           collection-src-directory: ${{ github.workspace }}/ansible_collections/redhat/insights
           coverage: ${{ github.event_name == 'schedule' && 'always' || 'never' }}
