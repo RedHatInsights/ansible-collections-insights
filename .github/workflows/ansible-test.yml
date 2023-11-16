@@ -47,24 +47,12 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           path: ansible_collections/redhat/insights
 
-      - name: Check out the branch
+      - name: Show git info
         run: |
-          # Create a branch for the current HEAD, which happens to be a merge commit
-          git -C ansible_collections/redhat/insights checkout -b 'pull-request-${{ github.event.pull_request.number }}'
-
-          # Name the target branch
-          git -C ansible_collections/redhat/insights branch '${{
-            github.event.pull_request.base.ref
-          }}' --track 'origin/${{
-            github.event.pull_request.base.ref
-          }}'
-
-          # Show branch information
           git -C ansible_collections/redhat/insights branch -vv
-        if: github.event_name == 'pull_request'
 
       - name: Get git version
         id: git-version
