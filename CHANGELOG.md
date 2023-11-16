@@ -13,7 +13,6 @@ are purposely not mentioned here.
   fixed when noticed/reported
 
 ### Fixed
-- `inventory` plugin: fix the retrieval of tags when using Python 2
 - `insights_register` module: actually make use of the `display_name` option,
   which was ignored until now
 - `insights_register` module: make the `force_reregister` option work again:
