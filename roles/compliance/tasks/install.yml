@@ -1,5 +1,7 @@
 ---
 - name: Install OpenSCAP packages
+  # noqa package-latest it needs to ensure that the latest available packages
+  #                     are installed
   yum:
     name:
       - openscap
