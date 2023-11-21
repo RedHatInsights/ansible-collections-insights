@@ -1,0 +1,5 @@
+---
+profile: production
+kinds:
+  - playbook: "**/tests/*.yml"
+  - playbook: "**/docs/*.yml"
