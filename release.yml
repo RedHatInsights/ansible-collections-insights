@@ -13,17 +13,14 @@
   tasks:
     - name: Update namespace and name
       block:
-        - name: Fix inventory plugin
+        - name: Fix namespace and name references in files
           ansible.builtin.replace:
-            path: "{{ playbook_dir }}/plugins/inventory/insights.py"
+            path: "{{ playbook_dir }}/{{ item }}"
             regexp: redhat.insights
             replace: "{{ collection_namespace }}.{{ collection_name }}"
-
-        - name: Fix role test
-          ansible.builtin.replace:
-            path: "{{ playbook_dir }}/roles/insights_client/tests/example-insights-client-playbook.yml"
-            regexp: redhat.insights
-            replace: "{{ collection_namespace }}.{{ collection_name }}"
+          loop:
+            - plugins/inventory/insights.py
+            - roles/insights_client/tests/example-insights-client-playbook.yml
 
     - name: Create galaxy.yml
       ansible.builtin.template:
