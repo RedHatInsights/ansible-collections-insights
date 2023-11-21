@@ -1,2 +1,1 @@
-roles/insights_client/files/insights.fact shebang
 plugins/inventory/insights.py validate-modules:missing-gplv3-license # the plugin is licensed as Apache 2.0
