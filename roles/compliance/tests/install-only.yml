@@ -3,6 +3,6 @@
   hosts: all
   tasks:
     - name: Install Insights compliance
-      import_role:
+      ansible.builtin.import_role:
         name: redhat.insights.compliance
         tasks_from: install

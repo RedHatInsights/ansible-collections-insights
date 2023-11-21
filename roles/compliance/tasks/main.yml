@@ -1,11 +1,11 @@
 ---
 - name: Check for Insights configuration
-  assert:
+  ansible.builtin.assert:
     that: ansible_local.insights is defined
     fail_msg: Unable to find insights fact. Have you installed the insights client?
 
 - name: Include install tasks
-  include_tasks: install.yml
+  ansible.builtin.include_tasks: install.yml
 
 - name: Include run tasks
-  include_tasks: run.yml
+  ansible.builtin.include_tasks: run.yml

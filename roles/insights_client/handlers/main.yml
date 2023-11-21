@@ -1,5 +1,5 @@
 ---
 - name: Run insights-client
-  command: insights-client
+  ansible.builtin.command: insights-client
   changed_when: true
   become: true

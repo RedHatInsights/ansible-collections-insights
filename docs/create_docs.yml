@@ -5,7 +5,7 @@
   gather_facts: false
   tasks:
     - name: Generate docs from docs.md.j2
-      template:
+      ansible.builtin.template:
         src: ./templates/docs.md.j2
         dest: "{{ item.output }}"
         mode: "u=rw,go=r"
