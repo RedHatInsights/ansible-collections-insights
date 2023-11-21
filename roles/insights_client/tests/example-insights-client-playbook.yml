@@ -4,4 +4,4 @@
   tasks:
     - name: Include insights_client role
       ansible.builtin.include_role:
-        name: redhatinsights.insights.insights_client
+        name: redhat.insights.insights_client
