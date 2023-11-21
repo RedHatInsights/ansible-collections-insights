@@ -19,8 +19,13 @@
             regexp: redhat.insights
             replace: "{{ collection_namespace }}.{{ collection_name }}"
           loop:
+            - docs/inventory.md
             - plugins/inventory/insights.py
+            - roles/compliance/tests/compliance.yml
+            - roles/compliance/tests/install-only.yml
+            - roles/compliance/tests/run-only.yml
             - roles/insights_client/tests/example-insights-client-playbook.yml
+            - tests/inventory/insights.yml
 
     - name: Create galaxy.yml
       ansible.builtin.template:
