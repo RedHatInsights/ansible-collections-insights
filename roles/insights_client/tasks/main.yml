@@ -15,7 +15,7 @@
 #     limitations under the License.
 #
 - name: Install 'insights-client'
-  yum:
+  ansible.builtin.yum:
     name: insights-client
   become: true
   notify: Run insights-client
@@ -37,27 +37,27 @@
   become: true
 
 - name: Change permissions of Insights Config directory so that Insights System ID can be read
-  file:
+  ansible.builtin.file:
     path: /etc/insights-client
     mode: og=rx
   become: true
 
 - name: Change permissions of machine_id file so that Insights System ID can be read
-  file:
+  ansible.builtin.file:
     path: /etc/insights-client/machine-id
     mode: og=r
   become: true
   notify: Run insights-client
 
 - name: Create directory for ansible custom facts
-  file:
+  ansible.builtin.file:
     state: directory
     recurse: true
     path: /etc/ansible/facts.d
   become: true
 
 - name: Install custom Insights fact
-  copy:
+  ansible.builtin.copy:
     src: insights.fact
     dest: /etc/ansible/facts.d
     mode: a+x
@@ -65,7 +65,7 @@
   notify: Run insights-client
 
 - name: Deploy Custom Tags
-  copy:
+  ansible.builtin.copy:
     dest: /etc/insights-client/tags.yaml
     content: "{{ insights_tags | to_nice_yaml }}"
     mode: og=r
@@ -74,7 +74,7 @@
   notify: Run insights-client
 
 - name: Remove Tags
-  file:
+  ansible.builtin.file:
     path: /etc/insights-client/tags.yaml
     state: absent
   become: true

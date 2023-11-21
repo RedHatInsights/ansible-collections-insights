@@ -14,39 +14,39 @@
     - name: Update namespace and name
       block:
         - name: Fix inventory plugin
-          replace:
+          ansible.builtin.replace:
             path: "{{ playbook_dir }}/plugins/inventory/insights.py"
             regexp: redhat.insights
             replace: "{{ collection_namespace }}.{{ collection_name }}"
 
         - name: Fix role test
-          replace:
+          ansible.builtin.replace:
             path: "{{ playbook_dir }}/roles/insights_client/tests/example-insights-client-playbook.yml"
             regexp: redhat.insights
             replace: "{{ collection_namespace }}.{{ collection_name }}"
 
     - name: Create galaxy.yml
-      template:
+      ansible.builtin.template:
         src: "{{ playbook_dir }}/galaxy.yml.j2"
         dest: "{{ playbook_dir }}/galaxy.yml"
         mode: "u=rw,go=r"
 
     - name: Build collection
-      command:
+      ansible.builtin.command:
         cmd: ansible-galaxy collection build
         chdir: "{{ playbook_dir }}"
         creates: "{{ playbook_dir }}/{{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
       tags: build
 
     - name: Install collection
-      command:
+      ansible.builtin.command:
         cmd: "ansible-galaxy collection install {{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz -p ~/.ansible/collections/"
         chdir: "{{ playbook_dir }}"
       changed_when: true
       tags: install
 
     - name: Publish collection
-      command:
+      ansible.builtin.command:
         cmd: "ansible-galaxy collection publish --api-key={{ api_key }} {{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
         chdir: "{{ playbook_dir }}"
       changed_when: true
@@ -54,13 +54,13 @@
 
     - name: Git cleanup
       # noqa: command-instead-of-module the git module does not do 'clean'
-      command:
+      ansible.builtin.command:
         cmd: git reset --hard
       changed_when: true
       tags: cleanup
 
     - name: Remove galaxy.yml
-      file:
+      ansible.builtin.file:
         path: "{{ playbook_dir }}/galaxy.yml"
         state: absent
       tags: cleanup
