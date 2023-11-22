@@ -1,7 +1,7 @@
 ---
 name: CI
 on:  # yamllint disable-line rule:truthy
-  # Run EOL CI against all pushes (direct commits, also merged PRs), Pull Requests
+  # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
   push:
     branches:
       - main
@@ -48,7 +48,8 @@ jobs:
 
       - name: Check out the branch
         run: |
-          # Create a branch for the current HEAD, which happens to be a merge commit
+          # Create a branch for the current HEAD, which happens to be a merge
+          # commit
           git checkout -b 'pull-request-${{ github.event.pull_request.number }}'
 
           # Name the target branch
