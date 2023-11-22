@@ -53,24 +53,26 @@ jobs:
       - name: Check out the branch
         run: |
           # Create a branch for the current HEAD, which happens to be a merge commit
-          git -C ansible_collections/redhat/insights checkout -b 'pull-request-${{ github.event.pull_request.number }}'
+          git checkout -b 'pull-request-${{ github.event.pull_request.number }}'
 
           # Name the target branch
-          git -C ansible_collections/redhat/insights branch '${{
+          git branch '${{
             github.event.pull_request.base.ref
           }}' --track 'origin/${{
             github.event.pull_request.base.ref
           }}'
 
           # Show branch information
-          git -C ansible_collections/redhat/insights branch -vv
+          git branch -vv
+        working-directory: ansible_collections/redhat/insights
         if: github.event_name == 'pull_request'
 
       - name: Get git version
         id: git-version
         run: |
-          export version=$(git -C ansible_collections/redhat/insights describe --tags | grep -Po '\d+\.\d+\.\d+')
+          export version=$(git describe --tags | grep -Po '\d+\.\d+\.\d+')
           echo "git_version=$version" >> $GITHUB_OUTPUT
+        working-directory: ansible_collections/redhat/insights
 
       - name: Generate galaxy.yml
         run: |
