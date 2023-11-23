@@ -1,0 +1,48 @@
+---
+name: ansible-lint
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  ansibe-lint:
+    name: Ansible Lint
+    runs-on: ubuntu-latest
+    steps:
+
+      # ansible-lint requires the collection to be in a directory in the form
+      # .../ansible_collections/NAMESPACE/COLLECTION_NAME/
+
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/redhat/insights
+
+      - name: Workaround ansible-lint action bug
+        run: |
+          # create a symlink to the .git directory of the checkout
+          # in the local directory: the current ansible-lint action (v6.22.0)
+          # does not use its "working_directory" for all its steps;
+          # https://github.com/ansible/ansible-lint/pull/3905
+          ln -s ansible_collections/redhat/insights/.git .
+
+      - name: Set Ansible environment variables (#1)
+        run: |
+          echo "ANSIBLE_COLLECTIONS_PATH=$PWD" >> "$GITHUB_ENV"
+
+      - name: Set Ansible environment variables (#2)
+        # yamllint disable rule:line-length
+        run: |
+          echo "ANSIBLE_ACTION_PLUGINS=$PWD/plugins/action" >> "$GITHUB_ENV"
+          echo "ANSIBLE_INVENTORY_PLUGINS=$PWD/plugins/inventory" >> "$GITHUB_ENV"
+          echo "ANSIBLE_LIBRARY=$PWD/plugins/modules" >> "$GITHUB_ENV"
+        # yamllint enable rule:line-length
+        working-directory: ansible_collections/redhat/insights
+
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@v6
+        with:
+          working_directory: ansible_collections/redhat/insights
