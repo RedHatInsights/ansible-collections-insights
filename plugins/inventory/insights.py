@@ -118,7 +118,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
     def get_patches(self, stale, get_system_advisories, get_system_packages, filter_tags):
         def get_system_patching_info(system_id, info):
-            query = "api/patch/v1/export/systems"
+            query = "api/patch/v3/export/systems"
             url = "%s/%s/%s/%s" % (self.server, query, system_id, info)
             response = self.session.get(url, auth=self.auth, headers=self.headers)
             if response.status_code != 200:
@@ -140,7 +140,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 result['attributes'][patching_info] = patching_info_result
             return results
 
-        query = "api/patch/v1/systems?filter[stale]=%s" % stale
+        query = "api/patch/v3/systems?filter[stale]=%s" % stale
         url = format_url(self.server, query, filter_tags)
         results = []
         while url:
