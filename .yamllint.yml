@@ -4,5 +4,4 @@ rules:
   line-length:
     max: 100
     ignore: |
-      /.github/workflows/ansible-test.yml
       /release.yml
