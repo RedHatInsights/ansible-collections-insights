@@ -90,6 +90,5 @@ jobs:
           ansible-core-version: stable-${{ matrix.ansible }}
           collection-src-directory: ${{ github.workspace }}/ansible_collections/redhat/insights
           coverage: ${{ github.event_name == 'schedule' && 'always' || 'never' }}
-          pull-request-change-detection: 'true'
           target-python-version: ${{ matrix.python }}
           testing-type: sanity
