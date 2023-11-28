@@ -88,6 +88,6 @@ jobs:
         with:
           ansible-core-version: stable-${{ matrix.ansible }}
           collection-src-directory: ${{ github.workspace }}/repo
-          coverage: ${{ github.event_name == 'schedule' && 'always' || 'never' }}
+          coverage: 'never'
           target-python-version: ${{ matrix.python }}
           testing-type: sanity
