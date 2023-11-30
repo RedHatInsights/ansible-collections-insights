@@ -21,14 +21,6 @@ jobs:
         with:
           path: ansible_collections/redhat/insights
 
-      - name: Workaround ansible-lint action bug
-        run: |
-          # create a symlink to the .git directory of the checkout
-          # in the local directory: the current ansible-lint action (v6.22.0)
-          # does not use its "working_directory" for all its steps;
-          # https://github.com/ansible/ansible-lint/pull/3905
-          ln -s ansible_collections/redhat/insights/.git .
-
       - name: Set Ansible environment variables (#1)
         run: |
           echo "ANSIBLE_COLLECTIONS_PATH=$PWD" >> "$GITHUB_ENV"
