@@ -67,30 +67,23 @@ False</td>
 ## Examples
 ```yaml
 
-# Normal Register
+# Normal registration
 - name: Register the insights client
   insights_register:
     state: present
+  become: true
 
-# Force a Reregister (for config changes, etc)
-- name: Register the insights client
+# Force a registration (for config changes, etc)
+- name: Re-register the insights client
   insights_register:
     state: present
     force_reregister: true
+  become: true
 
-# Unregister
+# Unregistration
 - name: Unregister the insights client
   insights_register:
     state: absent
-
-# Register an install of redhat-access-insights (this is not a 100% automated process)
-- name: Register redhat-access-insights
-  insights_register:
-    state: present
-    insights_name: 'redhat-access-insights'
-
-#Note: The above example for registering redhat-access-insights requires that the playbook be
-#changed to install redhat-access-insights and that redhat-access-insights is also passed into
-#the insights_config module and that the file paths be changed when using the file module
+  become: true
 
 ```
