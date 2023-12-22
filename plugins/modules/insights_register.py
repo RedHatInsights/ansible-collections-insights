@@ -137,7 +137,7 @@ def run_module():
                 module.exit_json(**result)
         if display_name:
             register_args.extend(['--display-name', display_name])
-        register_args.extend('--register')
+        register_args.extend(['--register'])
         subprocess.call(register_args)
         result['changed'] = True
         if force_reregister:
