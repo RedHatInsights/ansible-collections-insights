@@ -28,6 +28,17 @@
     authmethod: "{{ authmethod | default(omit) }}"
     display_name: "{{ insights_display_name | default(omit) }}"
     proxy: "{{ insights_proxy | default(omit) }}"
+    base_url: "{{ insights_base_url | default(omit) }}"
+    auto_update: "{{ insights_auto_update | default(omit) }}"
+    obfuscate: "{{ insights_obfuscate | default(omit) }}"
+    obfuscate_hostname: "{{ insights_obfuscate_hostname | default(omit) }}"
+    ansible_host: "{{ insights_ansible_host | default(omit) }}"
+    cmd_timeout: "{{ insights_cmd_timeout | default(omit) }}"
+    http_timeout: "{{ insights_http_timeout | default(omit) }}"
+    core_collect: "{{ insights_core_collect | default(omit) }}"
+    redaction_file: "{{ insights_redaction_file | default(omit) }}"
+    content_redaction_file: "{{ insights_content_redaction_file | default(omit) }}"
+    tags_file: "{{ insights_tags_file | default(omit) }}"
   become: true
   notify: Run insights-client
 
@@ -64,9 +75,67 @@
   become: true
   notify: Run insights-client
 
+- name: Slurp Insights config
+  ansible.builtin.slurp:
+    src: /etc/insights-client/insights-client.conf
+  register: _insights_conf
+
+- name: Set default tags_file path
+  ansible.builtin.set_fact:
+    _tags_file_path: /etc/insights-client/tags.yaml
+
+- name: 'Handle tags_file present in the configuration file'
+  when: >
+    _insights_conf.content | b64decode |
+    regex_findall('^(?<!#)\\s?tags_file\\s?=\\s?.+$', multiline=true)
+  block:
+
+    - name: Ensure only one configuration tags_file is present in the Insights configuration
+      ansible.builtin.assert:
+        that:
+          - _insights_conf.content | b64decode |
+            regex_findall('^(?<!#)\\s?tags_file\\s?=\\s?.+$', multiline=true) | length == 1
+        success_msg: Only one tags_file configuration entry was found.
+        fail_msg: >
+          More than one tags_file configuration entry was found. Please check the Insights
+          configuration on the host and correct this at /etc/insights-client/insights-client.conf
+
+    - name: Ensure tags_file path does not contain equal signs
+      ansible.builtin.assert:
+        that:
+          - _insights_conf.content |
+            b64decode |
+            regex_findall('^(?<!#)\\s?tags_file\\s?=\\s?.+$', multiline=true) |
+            first |
+            regex_findall('=') |
+            length == 1
+        success_msg: Path does not contain any equal signs.
+        fail_msg: >
+          Path contains one or more equal signs. Please check the option tags_file in the
+          Insights client configuration at /etc/insights-client/insights-client.conf and
+          correct this.
+
+    - name: Override tags_file path with the path retrieved from the configuration file
+      ansible.builtin.set_fact:
+        _tags_file_path: >-
+          {{
+            _insights_conf.content |
+            b64decode |
+            regex_findall('^(?<!#)\s?tags_file\s?=\s?.+$', multiline=true) |
+            first |
+            split('=') |
+            last |
+            trim
+          }}
+
+- name: Debug Insights tags_file path set
+  ansible.builtin.debug:
+    var: _tags_file_path
+    verbosity: 1
+
 - name: Deploy Custom Tags
   ansible.builtin.copy:
-    dest: /etc/insights-client/tags.yaml
+    dest: "{{ _tags_file_path }}"
     content: "{{ insights_tags | to_nice_yaml }}"
     mode: og=r
   become: true
@@ -75,7 +144,7 @@
 
 - name: Remove Tags
   ansible.builtin.file:
-    path: /etc/insights-client/tags.yaml
+    path: "{{ _tags_file_path }}"
     state: absent
   become: true
   when: insights_tags is not defined

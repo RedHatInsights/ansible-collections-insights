@@ -48,6 +48,79 @@ options:
       This set an optional proxy for the insights client to connect through if the client
       is behind a firewall or requires a proxy. Default is unspecified (none).
     required: false
+ loglevel:
+    description: >
+      Log level the Insights client should use. Default is unspecified (none), which means
+      the configuration file of the Insights client will not be touched and therefore uses
+      the default configured by the Insights client itself.
+    required: false
+  base_url:
+    description: >
+      Base URL for the Insights API. Default is unspecified (none), which means the configuration
+      file of the Insights client will not be touched and therefore uses the default configured
+      by the Insights client itself.
+    required: false
+  auto_update:
+    description: >
+      Automatically update the dynamic configuration. Default is unspecified (none),
+      which means the configuration file of the Insights client will not be touched and
+      therefore uses the default configured by the Insights client itself.
+    required: false
+  obfuscate:
+    description: >
+      Obfuscate IP addresses. Default is unspecified (none), which means the
+      configuration file of the Insights client will not be touched and therefore uses the
+      default configured by the Insights client itself.
+    required: false
+  obfuscate_hostname:
+    description: >
+      Obfuscate hostname. Requires obfuscate=True. Default is unspecified (none),
+      which means the configuration file of the Insights client will not be touched and therefore
+      uses the default configured by the Insights client itself.
+    required: false
+  ansible_host:
+    description: >
+      Ansible hostname for this system as reported to the Insights API. Default is
+      unspecified (none), which means the configuration file of the Insights client will not be
+      touched and therefore uses the default configured by the Insights client itself.
+    required: false
+  cmd_timeout:
+    description: >
+      Timeout for commands run during collection, in seconds. Default is unspecified (none),
+      which means the configuration file of the Insights client will not be
+      touched and therefore uses the default configured by the Insights client itself.
+    required: false
+  http_timeout:
+    description: >
+      Timeout for HTTP calls, in seconds. Default is unspecified (none),
+      which means the configuration file of the Insights client will not be
+      touched and therefore uses the default configured by the Insights client itself.
+    required: false
+  core_collect:
+    description: >
+      Use insights-core as the collection source. Included for compatibility only.
+      Modify only as directed. Default is unspecified (none), which means the configuration
+      file of the Insights client will not be touched and therefore uses the default
+      configured by the Insights client itself.
+    required: false
+  redaction_file:
+    description: >
+     Location of the redaction file for commands, files, and components. Default is
+      unspecified (none), which means the configuration file of the Insights client will not
+      be touched and therefore uses the default configured by the Insights client itself.
+    required: false
+  content_redaction_file:
+    description: >
+      Location of the redaction file for patterns and keywords. Default is
+      unspecified (none), which means the configuration file of the Insights client will not
+      be touched and therefore uses the default configured by the Insights client itself.
+    required: false
+  tags_file:
+    description: >
+      Location of the tags file for this system. Default is unspecified (none), which
+      means the configuration file of the Insights client will not be touched and therefore
+      uses the default configured by the Insights client itself.
+    required: false
 
 author:
     - Jason Stephens (@Jason-RH)
@@ -78,4 +151,43 @@ EXAMPLES = '''
     authmethod: "{{ authmethod }}"
     proxy: "{{ insights_proxy }}"
   become: true
+
+- name: Configure the Insights client with all available options when passing variables as a role variables
+  insights_config:
+    username: "{{ redhat_portal_username }}"
+    password: "{{ redhat_portal_password }}"
+    auto_config: "{{ auto_config }}"
+    authmethod: "{{ authmethod }}"
+    proxy: "{{ insights_proxy }}"
+    loglevel: "{{ insights_loglevel }}"
+    auto_config: "{{ insights_auto_config }}"
+    base_url: "{{ insights_base_url }}"
+    auto_update: "{{ insights_auto_update }}"
+    obfuscate: "{{ insights_obfuscate }}"
+    obfuscate_hostname: "{{ insights_obfuscate_hostname }}"
+    ansible_host: "{{ insights_ansible_host }}"
+    cmd_timeout: "{{ insights_cmd_timeout }}"
+    http_timeout: "{{ insights_http_timeout }}"
+    core_collect: "{{ insights_core_collect }}"
+    redaction_file: "{{ insights_redaction_file }}"
+    content_redaction_file: "{{ insights_content_redaction_file }}"
+    tags_file: "{{ insights_tags_file }}"
+  become: true
+
+- name: Configure the Insights client with all available options
+  insights_config:
+    username: John
+    password: secret_P4ssW0rd.
+    auto_config: true
+    authmethod: CERT
+    loglevel: DEBUG
+    auto_config: true
+    base_url: cert-api.access.redhat.com:443/r/insights
+    auto_update: true
+    obfuscate: true
+    obfuscate_hostname: true
+    ansible_host: my_host.example.com
+    cmd_timeout: 120
+    http_timeout: 120
+    core_collect: true
 '''
