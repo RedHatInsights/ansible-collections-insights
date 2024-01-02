@@ -5,6 +5,11 @@ that have any kind of impact on users, such as new & removed features, behaviour
 changes, and bug fixes. Internal changes such as for CI, style/lint, and so on
 are purposely not mentioned here.
 
+## [1.2.1]
+### Fixed
+- `insights_register` module: fix regression that prevented the registration
+  of unregistered systems
+
 ## [1.2.0]
 ### Changed
 - `inventory` plugin: use the v3 API of the "patch" endpoint; the only changes
