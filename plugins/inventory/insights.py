@@ -76,11 +76,15 @@ DOCUMENTATION = '''
 '''
 
 EXAMPLES = '''
-# Basic example using environment variables for authentication
+# Set to use this plugin
 plugin: redhat.insights.insights
 
+# Authentication using username and password; either specify these keys,
+# or set the "INSIGHTS_USER" and "INSIGHTS_PASSWORD" environment variables
+user: "insights username"
+password: "insights password"
+
 # Create groups for patching
-plugin: redhat.insights.insights
 get_patches: true
 groups:
   patching: insights_patching.enabled
@@ -90,7 +94,6 @@ groups:
   enhancement_patch: insights_patching.rhea_count > 0
 
 # Filter host by tags and create groups from tags
-plugin: redhat.insights.insights
 get_tags: true
 filter_tags:
   - insights-client/env=prod
