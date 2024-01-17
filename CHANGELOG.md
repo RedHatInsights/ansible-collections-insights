@@ -5,6 +5,11 @@ that have any kind of impact on users, such as new & removed features, behaviour
 changes, and bug fixes. Internal changes such as for CI, style/lint, and so on
 are purposely not mentioned here.
 
+## [unreleased]
+### Fixed
+- `insights_register` module: fix the `force_reregister` option to actually
+  unregister
+
 ## [1.2.1]
 ### Fixed
 - `insights_register` module: fix regression that prevented the registration

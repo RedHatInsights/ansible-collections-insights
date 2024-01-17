@@ -130,7 +130,7 @@ def run_module():
         result['original_message'] = 'Attempting to register ' + insights_name
         if reg_status == 0 and 'unregistered' not in stdout:
             if force_reregister:
-                subprocess.call(register_args, '--unregister')
+                subprocess.call([insights_name, '--unregister'])
             else:
                 result['changed'] = False
                 result['message'] = 'The Insights API has determined that this machine is already registered'
