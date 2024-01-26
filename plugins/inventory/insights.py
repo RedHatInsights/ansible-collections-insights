@@ -17,13 +17,21 @@ DOCUMENTATION = '''
           The name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as its own.
         required: true
         choices: ['redhat.insights.insights']
+      authentication:
+        description: >
+          The authentication method used for the Insights Inventory server.
+        required: false
+        default: 'basic'
+        choices: ['basic']
       user:
-        description: Red Hat username
+        description: >
+          Red Hat username; required for the 'basic' authentication method.
         required: true
         env:
             - name: INSIGHTS_USER
       password:
-        description: Red Hat password
+        description: >
+          Red Hat password; required for the 'basic' authentication method.
         required: true
         env:
             - name: INSIGHTS_PASSWORD
@@ -120,6 +128,17 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
     ''' Host inventory parser for ansible using foreman as source. '''
 
     NAME = 'redhat.insights.insights'
+
+    def create_requests_authentication(self):
+        """
+        Create the authentication object for requests according to the options
+        configured for the inventory.
+        """
+        authentication = self.get_option('authentication')
+        if authentication == 'basic':
+            return requests.auth.HTTPBasicAuth(
+                self.get_option('user'), self.get_option('password')
+            )
 
     def get_patches(self, stale, get_system_advisories, get_system_packages, filter_tags):
         def get_system_patching_info(system_id, info):
@@ -239,7 +258,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             url = "%s&registered_with=%s" % (url, registered_with)
 
         self.headers = {"Accept": "application/json"}
-        self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'), self.get_option('password'))
+        self.auth = self.create_requests_authentication()
         self.session = requests.Session()
 
         hosts_url = url
