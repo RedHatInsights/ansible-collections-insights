@@ -5,6 +5,12 @@ that have any kind of impact on users, such as new & removed features, behaviour
 changes, and bug fixes. Internal changes such as for CI, style/lint, and so on
 are purposely not mentioned here.
 
+## [unreleased]
+### Changed
+- `inventory` plugin: drop the explicit list of types for the default value
+  of the `staleness` option, so all the types available in Inventory are
+  used as expected (no matter whether new types are available in the future)
+
 ## [1.2.2]
 ### Fixed
 - `insights_register` module: fix the `force_reregister` option to actually

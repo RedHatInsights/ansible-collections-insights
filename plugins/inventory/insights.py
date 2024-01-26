@@ -35,8 +35,10 @@ DOCUMENTATION = '''
         default: fqdn
         type: str
       staleness:
-        description: Choose what hosts to return, based on staleness
-        default: [ 'fresh', 'stale', 'unknown' ]
+        description: >
+          Choose what hosts to return, based on staleness; an empty list means
+          "no filtering".
+        default: []
         type: list
         elements: str
       registered_with:
