@@ -1,8 +1,20 @@
 ---
-- name: Check for Insights configuration
+- name: Get the insights-client status
+  ansible.builtin.command:
+    argv:
+      - insights-client
+      - --status
+  changed_when: false
+  register: __compliance_insights_status
+  failed_when: __compliance_insights_status.rc not in [0,1]
+
+- name: Check insights-client is registered
   ansible.builtin.assert:
-    that: ansible_local.insights is defined
-    fail_msg: Unable to find insights fact. Have you installed the insights client?
+    that:
+      - >-
+        "This host is registered" in __compliance_insights_status.stdout
+        or "Registered" in __compliance_insights_status.stdout
+    fail_msg: "The system is not registered with insights-client"
 
 - name: Include install tasks
   ansible.builtin.include_tasks: install.yml
