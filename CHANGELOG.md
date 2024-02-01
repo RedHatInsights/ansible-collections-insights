@@ -10,6 +10,10 @@ are purposely not mentioned here.
 - `inventory` plugin: drop the explicit list of types for the default value
   of the `staleness` option, so all the types available in Inventory are
   used as expected (no matter whether new types are available in the future)
+- `compliance` role: no more rely on the `insights_client` role to ensure
+  systems are registered with Insights, and rather check directly using
+  `insights-client`; this makes it possible to use the role also with other
+  Ansible content for Insights (e.g. the `rhc` system role)
 
 ## [1.2.2]
 ### Fixed

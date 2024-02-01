@@ -5,7 +5,7 @@ Installs, configures, and runs [OpenSCAP](https://www.open-scap.org) compliance 
 
 Requirements
 ------------
-- The Insights client must be installed and configured prior to using the compliance service. See the [insights_client](../insights_client/README.md) role for automated deployment and configuration of the client. 
+- The Insights client must be installed and configured prior to using the compliance service. See the [rhc](https://github.com/linux-system-roles/rhc) role for an automated way to connect to RHSM and Red Hat Insights, or the existing [insights_client](../insights_client/README.md) role for automated deployment and configuration of the client.
 
 - The host must be configured in the [Insights portal](https://console.redhat.com/insights/compliance) prior to running a compliance scan.
 
