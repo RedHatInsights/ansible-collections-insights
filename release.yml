@@ -11,6 +11,10 @@
     api_key: undef
 
   tasks:
+    - name: Set facts
+      ansible.builtin.set_fact:
+        collection_archive: "{{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
+
     - name: Update namespace and name
       block:
         - name: Fix namespace and name references in files
@@ -40,7 +44,7 @@
           - collection
           - build
         chdir: "{{ playbook_dir }}"
-        creates: "{{ playbook_dir }}/{{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
+        creates: "{{ playbook_dir }}/{{ collection_archive }}"
       tags: build
 
     - name: Install collection
@@ -49,7 +53,7 @@
           - ansible-galaxy
           - collection
           - install
-          - "{{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
+          - "{{ collection_archive }}"
           - -p
           - ~/.ansible/collections/
         chdir: "{{ playbook_dir }}"
@@ -63,7 +67,7 @@
           - collection
           - publish
           - "--api-key={{ api_key }}"
-          - "{{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
+          - "{{ collection_archive }}"
         chdir: "{{ playbook_dir }}"
       changed_when: true
       tags: publish
