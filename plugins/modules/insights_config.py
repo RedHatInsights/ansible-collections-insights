@@ -48,6 +48,32 @@ options:
       This set an optional proxy for the insights client to connect through if the client
       is behind a firewall or requires a proxy. Default is unspecified (none).
     required: false
+  cert_verify:
+    description: >
+      This is optional parameter do disable certification verification. Default is True.
+    required: false
+  legacy_upload:
+    description: >
+      When set to False, uploads will go directly to cloud.redhat.com, instead of the old Classic
+      env.
+      Default is True.
+    required: false
+  base_url:
+    description: >
+    required: false
+  auto_update:
+    description: >
+      Disable automatic update of core/egg on each insights client run. Default is True.
+    required: false
+  insights_obfuscate:
+    description: >
+      Obfuscate IP addresses. Can be set to "True" or "False". Default is unspecified.
+    required: false
+  insights_obfuscate_hostname:
+    description: >
+      Obfuscate hostname. Requires obfuscate=True. Can be set to "True" or "False". Default is
+      unspecified.
+    required: false
 
 author:
     - Jason Stephens (@Jason-RH)
