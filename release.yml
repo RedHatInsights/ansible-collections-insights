@@ -35,21 +35,35 @@
 
     - name: Build collection
       ansible.builtin.command:
-        cmd: ansible-galaxy collection build
+        argv:
+          - ansible-galaxy
+          - collection
+          - build
         chdir: "{{ playbook_dir }}"
         creates: "{{ playbook_dir }}/{{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
       tags: build
 
     - name: Install collection
       ansible.builtin.command:
-        cmd: "ansible-galaxy collection install {{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz -p ~/.ansible/collections/"
+        argv:
+          - ansible-galaxy
+          - collection
+          - install
+          - "{{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
+          - -p
+          - ~/.ansible/collections/
         chdir: "{{ playbook_dir }}"
       changed_when: true
       tags: install
 
     - name: Publish collection
       ansible.builtin.command:
-        cmd: "ansible-galaxy collection publish --api-key={{ api_key }} {{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
+        argv:
+          - ansible-galaxy
+          - collection
+          - publish
+          - "--api-key={{ api_key }}"
+          - "{{ collection_namespace }}-{{ collection_name }}-{{ collection_version }}.tar.gz"
         chdir: "{{ playbook_dir }}"
       changed_when: true
       tags: publish
@@ -57,7 +71,10 @@
     - name: Git cleanup
       # noqa: command-instead-of-module the git module does not do 'clean'
       ansible.builtin.command:
-        cmd: git reset --hard
+        argv:
+          - git
+          - reset
+          - --hard
       changed_when: true
       tags: cleanup
 
