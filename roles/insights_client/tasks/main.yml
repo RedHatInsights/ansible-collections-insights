@@ -36,13 +36,13 @@
     state: present
   become: true
 
-- name: Change permissions of Insights Config directory so that Insights System ID can be read
+- name: Change permissions of Insights Config directory so that Insights System ID can be read  # yamllint disable-line rule:line-length
   ansible.builtin.file:
     path: /etc/insights-client
     mode: og=rx
   become: true
 
-- name: Change permissions of machine_id file so that Insights System ID can be read
+- name: Change permissions of machine_id file so that Insights System ID can be read  # yamllint disable-line rule:line-length
   ansible.builtin.file:
     path: /etc/insights-client/machine-id
     mode: og=r
