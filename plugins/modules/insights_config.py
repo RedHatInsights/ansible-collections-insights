@@ -13,6 +13,9 @@ short_description: This module handles initial configuration of the insights cli
 description: >
     Supply values for various configuration options that you would like to use.
     On install this module will add those values to the insights-client.conf file prior to registering.
+notes:
+  - It is possible to interact with `insights-client` only as root,
+    so root permissions are required to successfully run this module.
 options:
   username:
     description: >
