@@ -22,6 +22,7 @@
 ====================================
 - [Synopsis](Synopsis)
 - [Requirements](Requirements)
+- [Notes](Notes)
 - [Parameters](Parameters)
 - [Examples](Examples)
 
@@ -31,6 +32,13 @@
 ## Requirements
 {% if docs.requirements | d(none) is not none %}
 {{ pretty_md_list(docs.requirements) }}
+{% else %}
+(none)
+{% endif %}
+
+## Notes
+{% if docs.notes | d(none) is not none %}
+{{ pretty_md_list(docs.notes) }}
 {% else %}
 (none)
 {% endif %}
