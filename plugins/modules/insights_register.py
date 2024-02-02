@@ -19,6 +19,9 @@ short_description: This module registers the insights client
 description: >
   This module will check the current registration status, unregister if needed,
   and then register the insights client (and update the display_name if needed)
+notes:
+  - It is possible to interact with `insights-client` only as root,
+    so root permissions are required to successfully run this module.
 
 options:
   state:
