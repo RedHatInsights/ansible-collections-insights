@@ -35,6 +35,6 @@ jobs:
         working-directory: ansible_collections/redhat/insights
 
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@v6
+        uses: ansible/ansible-lint@v24
         with:
           working_directory: ansible_collections/redhat/insights
