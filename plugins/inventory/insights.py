@@ -26,13 +26,11 @@ DOCUMENTATION = '''
       user:
         description: >
           Red Hat username; required for the 'basic' authentication method.
-        required: true
         env:
             - name: INSIGHTS_USER
       password:
         description: >
           Red Hat password; required for the 'basic' authentication method.
-        required: true
         env:
             - name: INSIGHTS_PASSWORD
       server:
@@ -129,6 +127,19 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
     NAME = 'redhat.insights.insights'
 
+    def ensure_authentication_option(self, option):
+        """
+        Error out in case a specified authentication option is specified;
+        each authentication method requires certain options, and since the
+        authentication method can be configured, it is not possible to mark
+        any option as required.
+        """
+        if not self.get_option(option):
+            raise AnsibleError(
+                "missing mandatory option '%s' for authentication method '%s'" %
+                (option, self.get_option('authentication'))
+            )
+
     def create_requests_authentication(self):
         """
         Create the authentication object for requests according to the options
@@ -136,6 +147,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         """
         authentication = self.get_option('authentication')
         if authentication == 'basic':
+            self.ensure_authentication_option('user')
+            self.ensure_authentication_option('password')
             return requests.auth.HTTPBasicAuth(
                 self.get_option('user'), self.get_option('password')
             )
