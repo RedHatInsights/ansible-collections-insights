@@ -6,6 +6,13 @@ changes, and bug fixes. Internal changes such as for CI, style/lint, and so on
 are purposely not mentioned here.
 
 ## [unreleased]
+### Added
+- `inventory` plugin: new authentication method using a Red Hat service account:
+  there is a new `authentication` option for choosing the authentication method,
+  and the `client_id`, `client_secret`, and `client_scopes` options to set the
+  details of the service account. The default authentication method is still set
+  to `basic` (i.e. using `user` and `password`) for compatibility.
+
 ### Changed
 - `inventory` plugin: drop the explicit list of types for the default value
   of the `staleness` option, so all the types available in Inventory are

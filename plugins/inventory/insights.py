@@ -11,22 +11,62 @@ DOCUMENTATION = '''
         - Uses a YAML configuration file that ends with ``insights.(yml|yaml)``.
     extends_documentation_fragment:
         - constructed
+    notes:
+        - |
+          A service account used to access Red Hat Insights must be in a group
+          with at least the `Inventory Hosts Viewer` role; in case any of the
+          `get_patches`, `get_system_advisories`, and `get_system_packages`
+          options is enabled, then also the `Patch viewer` role is required.
     options:
       plugin:
         description: >
           The name of this plugin, it should always be set to 'redhat.insights.insights' for this plugin to recognize it as its own.
         required: true
         choices: ['redhat.insights.insights']
+      authentication:
+        description: >
+          The authentication method used for the Insights Inventory server.
+        required: false
+        default: 'basic'
+        choices: ['basic', 'service_account']
       user:
-        description: Red Hat username
-        required: true
+        description: >
+          Red Hat username; required for the 'basic' authentication method.
         env:
             - name: INSIGHTS_USER
       password:
-        description: Red Hat password
-        required: true
+        description: >
+          Red Hat password; required for the 'basic' authentication method.
         env:
             - name: INSIGHTS_PASSWORD
+      client_id:
+        description: >
+          Red Hat service account client ID; required for the 'service_account'
+          authentication method.
+        type: str
+        env:
+            - name: INSIGHTS_CLIENT_ID
+      client_secret:
+        description: >
+          Red Hat service account client secret; required for the
+          'service_account' authentication method.
+        type: str
+        env:
+            - name: INSIGHTS_CLIENT_SECRET
+      client_scopes:
+        description: >
+          Red Hat service account client scopes; used by the 'service_account'
+          authentication method.
+        default: ['api.console']
+        type: list
+        elements: str
+        env:
+            - name: INSIGHTS_CLIENT_SCOPES
+      oidc_endpoint:
+        description: >
+          OpenID Connect URL for 'service_account' authentication method.
+        default: https://sso.redhat.com/auth/realms/redhat-external
+        type: str
       server:
         description: Inventory server to connect to
         default: https://console.redhat.com
@@ -86,6 +126,12 @@ plugin: redhat.insights.insights
 user: "insights username"
 password: "insights password"
 
+# Authentication using a service account; either specify these keys, or set
+# the "INSIGHTS_CLIENT_ID" and "INSIGHTS_CLIENT_SECRET" environment variables
+authentication: service_account
+client_id: "service account client-id"
+client_secret: "service account client-secret"
+
 # Create groups for patching
 get_patches: true
 groups:
@@ -116,10 +162,96 @@ else:
     REQUESTS_IMPORT_ERROR = None
 
 
+if not REQUESTS_IMPORT_ERROR:
+    class BearerAuth(requests.auth.AuthBase):
+        """
+        Simple bearer authentication method for requests.
+        """
+
+        def __init__(self, token):
+            self.token = token
+
+        def __call__(self, r):
+            r.headers['Authorization'] = f'Bearer {self.token}'
+            return r
+
+
 class InventoryModule(BaseInventoryPlugin, Constructable):
     ''' Host inventory parser for ansible using foreman as source. '''
 
     NAME = 'redhat.insights.insights'
+
+    def ensure_authentication_option(self, option):
+        """
+        Error out in case a specified authentication option is specified;
+        each authentication method requires certain options, and since the
+        authentication method can be configured, it is not possible to mark
+        any option as required.
+        """
+        if not self.get_option(option):
+            raise AnsibleError(
+                "missing mandatory option '%s' for authentication method '%s'" %
+                (option, self.get_option('authentication'))
+            )
+
+    def get_oauth_token(self):
+        """
+        Contact the OpenID Connect URL to fetch an OAuth 2.0 token using
+        the OAuth 2.0 Token Endpoint.
+        """
+        session = requests.Session()
+
+        headers = {
+            "Accept": "application/json",
+        }
+        url = "%s/.well-known/openid-configuration" % (self.get_option('oidc_endpoint'))
+        response = session.get(url, headers=headers)
+        if response.status_code != 200:
+            raise AnsibleError("http error (%s): %s" %
+                               (response.status_code, response.text))
+        response_json = response.json()
+
+        client_scopes = self.get_option('client_scopes')
+        scopes_supported = response_json["scopes_supported"]
+        for client_scope in client_scopes:
+            if client_scope not in scopes_supported:
+                raise AnsibleError("client scope '%s' not allowed; allowed: %s" %
+                                   (client_scope, scopes_supported))
+
+        token_endpoint = response_json["token_endpoint"]
+        data = {
+            "client_id": self.get_option('client_id'),
+            "client_secret": self.get_option('client_secret'),
+            "grant_type": "client_credentials",
+            "scope": " ".join(client_scopes),
+        }
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        response = session.post(token_endpoint, headers=headers, data=data)
+        if response.status_code != 200:
+            raise AnsibleError("http error (%s): %s" %
+                               (response.status_code, response.text))
+
+        return response.json()["access_token"]
+
+    def create_requests_authentication(self):
+        """
+        Create the authentication object for requests according to the options
+        configured for the inventory.
+        """
+        authentication = self.get_option('authentication')
+        if authentication == 'basic':
+            self.ensure_authentication_option('user')
+            self.ensure_authentication_option('password')
+            return requests.auth.HTTPBasicAuth(
+                self.get_option('user'), self.get_option('password')
+            )
+        elif authentication == 'service_account':
+            self.ensure_authentication_option('client_id')
+            self.ensure_authentication_option('client_secret')
+            self.ensure_authentication_option('client_scopes')
+            return BearerAuth(self.get_oauth_token())
 
     def get_patches(self, stale, get_system_advisories, get_system_packages, filter_tags):
         def get_system_patching_info(system_id, info):
@@ -239,7 +371,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             url = "%s&registered_with=%s" % (url, registered_with)
 
         self.headers = {"Accept": "application/json"}
-        self.auth = requests.auth.HTTPBasicAuth(self.get_option('user'), self.get_option('password'))
+        self.auth = self.create_requests_authentication()
         self.session = requests.Session()
 
         hosts_url = url
