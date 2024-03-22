@@ -88,6 +88,66 @@ See the section 'Example Playbook' for information on various ways to use these 
         state: nc
         city: durham
     ```
+* insights_loglevel: (optional)
+    Log level the Insights client should use. Default is unspecified (none), which means
+    the configuration file of the Insights client will not be touched and therefore uses
+    the default configured by the Insights client itself.
+
+* insights_base_url: (optional)
+    Base URL for the Insights API. Default is unspecified (none), which means the configuration
+    file of the Insights client will not be touched and therefore uses the default configured
+    by the Insights client itself.
+
+* insights_auto_update: (optional)
+    Automatically update the dynamic configuration. Default is unspecified (none),
+    which means the configuration file of the Insights client will not be touched and
+    therefore uses the default configured by the Insights client itself.
+
+* insights_obfuscate: (optional)
+    Obfuscate IP addresses. Default is unspecified (none), which means the
+    configuration file of the Insights client will not be touched and therefore uses the
+    default configured by the Insights client itself.
+
+* insights_obfuscate_hostname: (optional)
+    Obfuscate hostname. Requires obfuscate=True. Default is unspecified (none),
+    which means the configuration file of the Insights client will not be touched and therefore
+    uses the default configured by the Insights client itself.
+
+* insights_ansible_host: (optional)
+    Ansible hostname for this system as reported to the Insights API. Default is
+    unspecified (none), which means the configuration file of the Insights client will not be
+    touched and therefore uses the default configured by the Insights client itself.
+
+* insights_cmd_timeout: (optional)
+    Timeout for commands run during collection, in seconds. Default is unspecified (none),
+    which means the configuration file of the Insights client will not be
+    touched and therefore uses the default configured by the Insights client itself.
+
+* insights_http_timeout: (optional)
+    Timeout for HTTP calls, in seconds. Default is unspecified (none),
+    which means the configuration file of the Insights client will not be
+    touched and therefore uses the default configured by the Insights client itself.
+
+* insights_core_collect: (optional)
+    Use insights-core as the collection source. Included for compatibility only.
+    Modify only as directed. Default is unspecified (none), which means the configuration
+    file of the Insights client will not be touched and therefore uses the default
+    configured by the Insights client itself.
+
+* insights_redaction_file: (optional)
+    Location of the redaction file for commands, files, and components. Default is
+    unspecified (none), which means the configuration file of the Insights client will not
+    be touched and therefore uses the default configured by the Insights client itself.
+
+* insights_content_redaction_file: (optional)
+    Location of the redaction file for patterns and keywords. Default is
+    unspecified (none), which means the configuration file of the Insights client will not
+    be touched and therefore uses the default configured by the Insights client itself.
+
+* insights_tags_file: (optional)
+    Location of the tags file for this system. Default is unspecified (none), which
+    means the configuration file of the Insights client will not be touched and therefore
+    uses the default configured by the Insights client itself.
 
 * ansible_python_interpreter: (see Requirements above to determine if this is needed)
 
