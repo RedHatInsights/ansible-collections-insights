@@ -2,6 +2,7 @@
 - name: Install OpenSCAP packages
   # noqa package-latest it needs to ensure that the latest available packages
   #                     are installed
+  # noqa fqcn[action-core]
   ansible.builtin.yum:
     name:
       - openscap
