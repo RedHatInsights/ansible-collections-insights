@@ -6,6 +6,9 @@ changes, and bug fixes. Internal changes such as for CI, style/lint, and so on
 are purposely not mentioned here.
 
 ## [unreleased]
+### Changed
+- The minimum Ansible Core version supported is now 2.15.
+
 ### Added
 - `inventory` plugin: new authentication method using a Red Hat service account:
   there is a new `authentication` option for choosing the authentication method,
