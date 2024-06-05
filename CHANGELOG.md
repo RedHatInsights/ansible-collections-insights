@@ -25,6 +25,9 @@ are purposely not mentioned here.
   `insights-client`; this makes it possible to use the role also with other
   Ansible content for Insights (e.g. the `rhc` system role)
 
+### Fixed
+- `compliance` role: no more require priviledge escalation at playbook level
+
 ## [1.2.2]
 ### Fixed
 - `insights_register` module: fix the `force_reregister` option to actually

@@ -5,3 +5,4 @@
       - insights-client
       - --compliance
   changed_when: true
+  become: true
