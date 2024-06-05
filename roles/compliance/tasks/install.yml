@@ -9,3 +9,4 @@
       - scap-security-guide
       - openscap-scanner
     state: latest
+  become: true
