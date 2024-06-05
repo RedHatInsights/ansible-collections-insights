@@ -15,6 +15,7 @@
 #     limitations under the License.
 #
 - name: Install 'insights-client'
+  # noqa fqcn[action-core]
   ansible.builtin.yum:
     name: insights-client
   become: true
