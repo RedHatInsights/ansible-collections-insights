@@ -71,7 +71,7 @@ DOCUMENTATION = '''
         description: Inventory server to connect to
         default: https://console.redhat.com
       selection:
-        description: Choose what variable to use for ansible_host
+        description: Choose what variable to use for ansible_host. Use `none` to skip setting ansible_host.
         default: fqdn
         type: str
       staleness:
