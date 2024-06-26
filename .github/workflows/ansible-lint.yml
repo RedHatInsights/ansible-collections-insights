@@ -21,6 +21,17 @@ jobs:
         with:
           path: ansible_collections/redhat/insights
 
+      - name: Workaround ansible-lint action bug
+        run: |
+          # create a symlink to the .git directory of the checkout
+          # in the local directory: the current ansible-lint action (v24.6.1)
+          # prepends "working_directory" to the output location for files in
+          # the .git directoryof the checkout; regression introduced by
+          # https://github.com/ansible/ansible-lint/pull/4213
+          mkdir -p ansible_collections/redhat/insights
+          ln -s ../../../.git ansible_collections/redhat/insights/
+        working-directory: ansible_collections/redhat/insights
+
       - name: Set Ansible environment variables (#1)
         run: |
           echo "ANSIBLE_COLLECTIONS_PATH=$PWD" >> "$GITHUB_ENV"
