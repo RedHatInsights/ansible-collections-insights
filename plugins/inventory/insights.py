@@ -299,7 +299,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         return results
 
     def get_tags(self, ids):
-        first_url = "api/inventory/v1/hosts/%s/tags?per_page=50" % ','.join(ids)
+        first_url = "api/inventory/v1/hosts/%s/tags?per_page=100" % ','.join(ids)
         url = '%s/%s' % (self.server, first_url)
         results = {}
 
@@ -347,7 +347,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         self._read_config_data(path)
 
         self.server = self.get_option('server')
-        url = "%s/api/inventory/v1/hosts?" % (self.server)
+        url = "%s/api/inventory/v1/hosts?per_page=100" % (self.server)
         strict = self.get_option('strict')
         get_patches = self.get_option('get_patches')
         get_system_advisories = self.get_option('get_system_advisories')
