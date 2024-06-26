@@ -277,7 +277,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 result['attributes'][patching_info] = patching_info_result
             return results
 
-        query = "api/patch/v3/systems?filter[stale]=%s" % stale
+        query = "api/patch/v3/systems?limit=100&filter[stale]=%s" % stale
         url = format_url(self.server, query, filter_tags)
         results = []
         while url:
