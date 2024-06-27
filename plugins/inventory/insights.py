@@ -207,8 +207,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         url = "%s/.well-known/openid-configuration" % (self.get_option('oidc_endpoint'))
         response = session.get(url, headers=headers)
         if response.status_code != 200:
-            raise AnsibleError("http error (%s): %s" %
-                               (response.status_code, response.text))
+            raise AnsibleError("HTTP error %s for %s: %s" %
+                               (response.status_code, url, response.text))
         response_json = response.json()
 
         client_scopes = self.get_option('client_scopes')
@@ -230,8 +230,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         }
         response = session.post(token_endpoint, headers=headers, data=data)
         if response.status_code != 200:
-            raise AnsibleError("http error (%s): %s" %
-                               (response.status_code, response.text))
+            raise AnsibleError("HTTP error %s for %s: %s" %
+                               (response.status_code, url, response.text))
 
         return response.json()["access_token"]
 
@@ -263,8 +263,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         """
         response = self.session.get(url)
         if response.status_code != 200:
-            raise AnsibleError("http error (%s): %s" %
-                               (response.status_code, response.text))
+            raise AnsibleError("HTTP error %s for %s: %s" %
+                               (response.status_code, url, response.text))
         return response.json()
 
     def get_patches(self, stale, get_system_advisories, get_system_packages, filter_tags):
