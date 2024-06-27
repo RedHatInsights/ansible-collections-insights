@@ -253,6 +253,17 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             self.ensure_authentication_option('client_scopes')
             return BearerAuth(self.get_oauth_token())
 
+    def ensure_requests_authentication(self):
+        """
+        Ensure the authentication object for requests is created and
+        valid/usable.
+        """
+        create_new = False
+        if not self.session.auth:
+            create_new = True
+        if create_new:
+            self.session.auth = self.create_requests_authentication()
+
     def do_get(self, url):
         """
         Simple wrapper around a request GET, returning the parsed JSON content.
@@ -261,6 +272,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         the same operations before & after all the requests, such as error
         reporting.
         """
+        self.ensure_requests_authentication()
         response = self.session.get(url)
         if response.status_code != 200:
             raise AnsibleError("HTTP error %s for %s: %s" %
@@ -371,7 +383,6 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             url = "%s&registered_with=%s" % (url, registered_with)
 
         self.session = requests.Session()
-        self.session.auth = self.create_requests_authentication()
         self.session.headers = {"Accept": "application/json"}
 
         hosts_url = url
