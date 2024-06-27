@@ -257,7 +257,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         def get_system_patching_info(system_id, info):
             query = "api/patch/v3/export/systems"
             url = "%s/%s/%s/%s" % (self.server, query, system_id, info)
-            response = self.session.get(url, auth=self.auth, headers=self.headers)
+            response = self.session.get(url, headers=self.headers)
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
                                    (response.status_code, response.text))
@@ -281,7 +281,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         url = format_url(self.server, query, filter_tags)
         results = []
         while url:
-            response = self.session.get(url, auth=self.auth, headers=self.headers)
+            response = self.session.get(url, headers=self.headers)
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
                                    (response.status_code, response.text))
@@ -304,7 +304,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         results = {}
 
         while url:
-            response = self.session.get(url, auth=self.auth, headers=self.headers)
+            response = self.session.get(url, headers=self.headers)
 
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
@@ -371,12 +371,12 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             url = "%s&registered_with=%s" % (url, registered_with)
 
         self.headers = {"Accept": "application/json"}
-        self.auth = self.create_requests_authentication()
         self.session = requests.Session()
+        self.session.auth = self.create_requests_authentication()
 
         hosts_url = url
         while hosts_url:
-            response = self.session.get(hosts_url, auth=self.auth, headers=self.headers)
+            response = self.session.get(hosts_url, headers=self.headers)
 
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
