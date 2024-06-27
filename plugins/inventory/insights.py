@@ -285,13 +285,12 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
                                    (response.status_code, response.text))
-            elif response.status_code == 200:
-                results += response.json()['data']
-                next_page = response.json()['links']['next']
-                if next_page:
-                    url = format_url(self.server, next_page, filter_tags)
-                else:
-                    url = None
+            results += response.json()['data']
+            next_page = response.json()['links']['next']
+            if next_page:
+                url = format_url(self.server, next_page, filter_tags)
+            else:
+                url = None
         if get_system_advisories:
             results = add_patching_data(results, "advisories")
         if get_system_packages:
@@ -309,16 +308,15 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
                                    (response.status_code, response.text))
-            elif response.status_code == 200:
-                results.update(response.json()['results'])
-                total = response.json()['total']
-                count = response.json()['count']
-                per_page = response.json()['per_page']
-                page = response.json()['page']
-                if per_page * (page - 1) + count < total:
-                    url = "%s/%s&page=%s" % (self.server, first_url, (page + 1))
-                else:
-                    url = None
+            results.update(response.json()['results'])
+            total = response.json()['total']
+            count = response.json()['count']
+            per_page = response.json()['per_page']
+            page = response.json()['page']
+            if per_page * (page - 1) + count < total:
+                url = "%s/%s&page=%s" % (self.server, first_url, (page + 1))
+            else:
+                url = None
         return results
 
     def parse_tags(self, tag_list):
@@ -381,18 +379,17 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             if response.status_code != 200:
                 raise AnsibleError("http error (%s): %s" %
                                    (response.status_code, response.text))
-            elif response.status_code == 200:
-                results += response.json()['results']
-                total = response.json()['total']
-                count = response.json()['count']
-                per_page = response.json()['per_page']
-                page = response.json()['page']
-                if per_page * (page - 1) + count < total:
-                    hosts_url = "%s&page=%s" % (url, (page + 1))
-                    if len(filter_tags) > 0:
-                        hosts_url = "%s&tags=%s" % (hosts_url, '&tags='.join(filter_tags))
-                else:
-                    hosts_url = None
+            results += response.json()['results']
+            total = response.json()['total']
+            count = response.json()['count']
+            per_page = response.json()['per_page']
+            page = response.json()['page']
+            if per_page * (page - 1) + count < total:
+                hosts_url = "%s&page=%s" % (url, (page + 1))
+                if len(filter_tags) > 0:
+                    hosts_url = "%s&tags=%s" % (hosts_url, '&tags='.join(filter_tags))
+            else:
+                hosts_url = None
 
         if get_patching_info:
             stale_patches = self.get_patches(
