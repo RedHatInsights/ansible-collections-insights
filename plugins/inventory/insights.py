@@ -253,16 +253,25 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             self.ensure_authentication_option('client_scopes')
             return BearerAuth(self.get_oauth_token())
 
+    def do_get(self, url):
+        """
+        Simple wrapper around a request GET, returning the parsed JSON content.
+
+        Wrapping all the session.get() calls here makes it possible to perform
+        the same operations before & after all the requests, such as error
+        reporting.
+        """
+        response = self.session.get(url)
+        if response.status_code != 200:
+            raise AnsibleError("http error (%s): %s" %
+                               (response.status_code, response.text))
+        return response.json()
+
     def get_patches(self, stale, get_system_advisories, get_system_packages, filter_tags):
         def get_system_patching_info(system_id, info):
             query = "api/patch/v3/export/systems"
             url = "%s/%s/%s/%s" % (self.server, query, system_id, info)
-            response = self.session.get(url)
-            if response.status_code != 200:
-                raise AnsibleError("http error (%s): %s" %
-                                   (response.status_code, response.text))
-            system_patching_info = response.json()
-            return system_patching_info
+            return self.do_get(url)
 
         def format_url(server, api_call, filter_tags):
             url = "%s/%s" % (server, api_call)
@@ -281,12 +290,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         url = format_url(self.server, query, filter_tags)
         results = []
         while url:
-            response = self.session.get(url)
-            if response.status_code != 200:
-                raise AnsibleError("http error (%s): %s" %
-                                   (response.status_code, response.text))
-            results += response.json()['data']
-            next_page = response.json()['links']['next']
+            response_json = self.do_get(url)
+            results += response_json['data']
+            next_page = response_json['links']['next']
             if next_page:
                 url = format_url(self.server, next_page, filter_tags)
             else:
@@ -303,16 +309,12 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         results = {}
 
         while url:
-            response = self.session.get(url)
-
-            if response.status_code != 200:
-                raise AnsibleError("http error (%s): %s" %
-                                   (response.status_code, response.text))
-            results.update(response.json()['results'])
-            total = response.json()['total']
-            count = response.json()['count']
-            per_page = response.json()['per_page']
-            page = response.json()['page']
+            response_json = self.do_get(url)
+            results.update(response_json['results'])
+            total = response_json['total']
+            count = response_json['count']
+            per_page = response_json['per_page']
+            page = response_json['page']
             if per_page * (page - 1) + count < total:
                 url = "%s/%s&page=%s" % (self.server, first_url, (page + 1))
             else:
@@ -374,16 +376,12 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
         hosts_url = url
         while hosts_url:
-            response = self.session.get(hosts_url)
-
-            if response.status_code != 200:
-                raise AnsibleError("http error (%s): %s" %
-                                   (response.status_code, response.text))
-            results += response.json()['results']
-            total = response.json()['total']
-            count = response.json()['count']
-            per_page = response.json()['per_page']
-            page = response.json()['page']
+            response_json = self.do_get(hosts_url)
+            results += response_json['results']
+            total = response_json['total']
+            count = response_json['count']
+            per_page = response_json['per_page']
+            page = response_json['page']
             if per_page * (page - 1) + count < total:
                 hosts_url = "%s&page=%s" % (url, (page + 1))
                 if len(filter_tags) > 0:
