@@ -150,6 +150,7 @@ keyed_groups:
     prefix: insights
 '''
 
+import time
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
 from ansible.errors import AnsibleError
 from ansible.module_utils.six import raise_from
@@ -233,7 +234,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             raise AnsibleError("HTTP error %s for %s: %s" %
                                (response.status_code, url, response.text))
 
-        return response.json()["access_token"]
+        return response.json()
 
     def create_requests_authentication(self):
         """
@@ -251,7 +252,23 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
             self.ensure_authentication_option('client_id')
             self.ensure_authentication_option('client_secret')
             self.ensure_authentication_option('client_scopes')
-            return BearerAuth(self.get_oauth_token())
+            token_json = self.get_oauth_token()
+            try:
+                token_lifetime = int(token_json['expires_in'])
+                # remove 1 second from the token lifetime: this way we avoid
+                # (or at least greatly minimize) the risk of the token expiring
+                # between the successful validity check and the actual request
+                # that uses it
+                token_lifetime -= 1
+            except (KeyError, ValueError):
+                # 'expires_in' is optional, see RFC 6749 §4.4.2;
+                # hence, do not fail if missing or not an integer
+                self.token_expiration = None
+            else:
+                # the token lifetime is in seconds, whereas monotonic_ns()
+                # returns nanoseconds
+                self.token_expiration = time.monotonic_ns() + token_lifetime * 1e9
+            return BearerAuth(token_json["access_token"])
 
     def ensure_requests_authentication(self):
         """
@@ -260,6 +277,8 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         """
         create_new = False
         if not self.session.auth:
+            create_new = True
+        elif self.token_expiration and time.monotonic_ns() > self.token_expiration:
             create_new = True
         if create_new:
             self.session.auth = self.create_requests_authentication()
@@ -382,6 +401,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         if registered_with:
             url = "%s&registered_with=%s" % (url, registered_with)
 
+        self.token_expiration = None
         self.session = requests.Session()
         self.session.headers = {"Accept": "application/json"}
 
