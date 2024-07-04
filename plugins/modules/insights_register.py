@@ -53,6 +53,14 @@ options:
     required: false
     type: bool
 
+deprecated:
+  removed_in: 2.0.0
+  why: >
+    Its functionalities are now provided in a simpler way by the "rhc" system
+    role.
+  alternative: >
+    The "rhc" system role.
+
 author:
     - Jason Stephens (@Jason-RH)
 '''

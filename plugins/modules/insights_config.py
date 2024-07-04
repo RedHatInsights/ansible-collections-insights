@@ -51,6 +51,13 @@ options:
       This set an optional proxy for the insights client to connect through if the client
       is behind a firewall or requires a proxy. Default is unspecified (none).
     required: false
+deprecated:
+  removed_in: 2.0.0
+  why: >
+    Its functionalities are now provided in a simpler way by the "rhc" system
+    role.
+  alternative: >
+    The "rhc" system role.
 
 author:
     - Jason Stephens (@Jason-RH)

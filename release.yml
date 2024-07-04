@@ -28,10 +28,12 @@
             replace: "{{ collection_namespace }}.{{ collection_name }}"
           loop:
             - docs/inventory.md
+            - plugins/action/insights_config.py
             - plugins/inventory/insights.py
             - roles/compliance/tests/compliance.yml
             - roles/compliance/tests/install-only.yml
             - roles/compliance/tests/run-only.yml
+            - roles/insights_client/tasks/main.yml
             - roles/insights_client/tests/example-insights-client-playbook.yml
             - tests/inventory/insights.yml
 
