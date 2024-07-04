@@ -79,7 +79,7 @@ jobs:
         working-directory: repo
         env:
           JINJA_collection_name: insights
-          JINJA_collection_namespace: ${{ github.repository_owner }}
+          JINJA_collection_namespace: redhat
           JINJA_collection_repo: https://github.com/${{ github.repository }}
           JINJA_collection_version: ${{ steps.git-version.outputs.git_version }}
 
