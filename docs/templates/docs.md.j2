@@ -21,6 +21,9 @@
 {% if docs.name is defined %}{{ docs.name }}{% else %}{{ docs.module }}{% endif %} - {{ docs.short_description }}
 ====================================
 - [Synopsis](#synopsis)
+{% if docs.deprecated is defined %}
+- [DEPRECATED](#deprecated)
+{% endif %}
 - [Requirements](#requirements)
 - [Notes](#notes)
 - [Parameters](#parameters)
@@ -29,6 +32,14 @@
 ## Synopsis
 {{ pretty_md_list(docs.description) }}
 
+{% if docs.deprecated is defined %}
+## DEPRECATED
+Please note that `{% if docs.name is defined %}{{ docs.name }}{% else %}{{ docs.module }}{% endif %}` is **deprecated**:
+- To be removed in version: {{ docs.deprecated.removed_in }}
+- Why: {{ docs.deprecated.why | trim }}
+- Alternative: {{ docs.deprecated.alternative | trim }}
+
+{% endif %}
 ## Requirements
 {% if docs.requirements | d(none) is not none %}
 {{ pretty_md_list(docs.requirements) }}
