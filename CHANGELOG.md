@@ -5,7 +5,7 @@ that have any kind of impact on users, such as new & removed features, behaviour
 changes, and bug fixes. Internal changes such as for CI, style/lint, and so on
 are purposely not mentioned here.
 
-## [unreleased]
+## [1.3.0]
 ### Changed
 - The minimum Ansible Core version supported is now 2.15.
 
