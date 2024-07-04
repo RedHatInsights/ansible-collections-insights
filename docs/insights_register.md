@@ -1,9 +1,10 @@
 insights_register - This module registers the insights client
 ====================================
-- [Synopsis](Synopsis)
-- [Requirements](Requirements)
-- [Parameters](Parameters)
-- [Examples](Examples)
+- [Synopsis](#synopsis)
+- [Requirements](#requirements)
+- [Notes](#notes)
+- [Parameters](#parameters)
+- [Examples](#examples)
 
 ## Synopsis
 This module will check the current registration status, unregister if needed, and then register the insights client (and update the display_name if needed)
@@ -12,6 +13,10 @@ This module will check the current registration status, unregister if needed, an
 
 ## Requirements
 (none)
+
+## Notes
+- It is possible to interact with `insights-client` only as root, so root permissions are required to successfully run this module.
+
 
 ## Parameters
 

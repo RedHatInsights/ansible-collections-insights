@@ -1,9 +1,10 @@
 insights - insights inventory source
 ====================================
-- [Synopsis](Synopsis)
-- [Requirements](Requirements)
-- [Parameters](Parameters)
-- [Examples](Examples)
+- [Synopsis](#synopsis)
+- [Requirements](#requirements)
+- [Notes](#notes)
+- [Parameters](#parameters)
+- [Examples](#examples)
 
 ## Synopsis
 - Get inventory hosts from the console.redhat.com inventory service.
@@ -12,6 +13,14 @@ insights - insights inventory source
 
 ## Requirements
 - requests
+
+
+## Notes
+- A service account used to access Red Hat Insights must be in a group
+with at least the `Inventory Hosts Viewer` role; in case any of the
+`get_patches`, `get_system_advisories`, and `get_system_packages`
+options is enabled, then also the `Patch viewer` role is required.
+
 
 
 ## Parameters
@@ -36,22 +45,78 @@ insights - insights inventory source
 </td>
 </tr>
 <tr>
+<td><b>authentication</b></br>
+</td>
+<td><b>Choices:</b><br>
+<ul>
+<li>basic</li>
+<li>service_account</li>
+</ul>
+<b>Default:</b><br>
+basic</td>
+<td></td>
+<td>The authentication method used for the Insights Inventory server.
+</td>
+</tr>
+<tr>
 <td><b>user</b></br>
-<p style="color:red;font-size:75%">required</p></td>
+</td>
 <td></td>
 <td><b>env:</b><br>
 -   name: INSIGHTS_USER
 </td>
-<td>Red Hat username</td>
+<td>Red Hat username; required for the 'basic' authentication method.
+</td>
 </tr>
 <tr>
 <td><b>password</b></br>
-<p style="color:red;font-size:75%">required</p></td>
+</td>
 <td></td>
 <td><b>env:</b><br>
 -   name: INSIGHTS_PASSWORD
 </td>
-<td>Red Hat password</td>
+<td>Red Hat password; required for the 'basic' authentication method.
+</td>
+</tr>
+<tr>
+<td><b>client_id</b></br>
+</td>
+<td></td>
+<td><b>env:</b><br>
+-   name: INSIGHTS_CLIENT_ID
+</td>
+<td>Red Hat service account client ID; required for the 'service_account' authentication method.
+</td>
+</tr>
+<tr>
+<td><b>client_secret</b></br>
+</td>
+<td></td>
+<td><b>env:</b><br>
+-   name: INSIGHTS_CLIENT_SECRET
+</td>
+<td>Red Hat service account client secret; required for the 'service_account' authentication method.
+</td>
+</tr>
+<tr>
+<td><b>client_scopes</b></br>
+</td>
+<td><b>Default:</b><br>
+['api.console']</td>
+<td><b>env:</b><br>
+-   name: INSIGHTS_CLIENT_SCOPES
+</td>
+<td>Red Hat service account client scopes; used by the 'service_account' authentication method.
+</td>
+</tr>
+<tr>
+<td><b>oidc_endpoint</b></br>
+</td>
+<td><b>Default:</b><br>
+https://sso.redhat.com/auth/realms/redhat-external</td>
+<td></td>
+<td>OpenID Connect URL for 'service_account' authentication method.
+</td>
 </tr>
 <tr>
 <td><b>server</b></br>
@@ -73,9 +138,10 @@ fqdn</td>
 <td><b>staleness</b></br>
 </td>
 <td><b>Default:</b><br>
-['fresh', 'stale', 'unknown']</td>
+[]</td>
 <td></td>
-<td>Choose what hosts to return, based on staleness</td>
+<td>Choose what hosts to return, based on staleness; an empty list means "no filtering".
+</td>
 </tr>
 <tr>
 <td><b>registered_with</b></br>
@@ -145,6 +211,12 @@ plugin: redhat.insights.insights
 # or set the "INSIGHTS_USER" and "INSIGHTS_PASSWORD" environment variables
 user: "insights username"
 password: "insights password"
+
+# Authentication using a service account; either specify these keys, or set
+# the "INSIGHTS_CLIENT_ID" and "INSIGHTS_CLIENT_SECRET" environment variables
+authentication: service_account
+client_id: "service account client-id"
+client_secret: "service account client-secret"
 
 # Create groups for patching
 get_patches: true

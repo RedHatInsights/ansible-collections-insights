@@ -1,9 +1,10 @@
 insights_config - This module handles initial configuration of the insights client on install
 ====================================
-- [Synopsis](Synopsis)
-- [Requirements](Requirements)
-- [Parameters](Parameters)
-- [Examples](Examples)
+- [Synopsis](#synopsis)
+- [Requirements](#requirements)
+- [Notes](#notes)
+- [Parameters](#parameters)
+- [Examples](#examples)
 
 ## Synopsis
 Supply values for various configuration options that you would like to use. On install this module will add those values to the insights-client.conf file prior to registering.
@@ -12,6 +13,10 @@ Supply values for various configuration options that you would like to use. On i
 
 ## Requirements
 (none)
+
+## Notes
+- It is possible to interact with `insights-client` only as root, so root permissions are required to successfully run this module.
+
 
 ## Parameters
 
