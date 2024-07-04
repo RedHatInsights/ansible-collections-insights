@@ -20,11 +20,11 @@
 {% endmacro %}
 {% if docs.name is defined %}{{ docs.name }}{% else %}{{ docs.module }}{% endif %} - {{ docs.short_description }}
 ====================================
-- [Synopsis](Synopsis)
-- [Requirements](Requirements)
-- [Notes](Notes)
-- [Parameters](Parameters)
-- [Examples](Examples)
+- [Synopsis](#synopsis)
+- [Requirements](#requirements)
+- [Notes](#notes)
+- [Parameters](#parameters)
+- [Examples](#examples)
 
 ## Synopsis
 {{ pretty_md_list(docs.description) }}
