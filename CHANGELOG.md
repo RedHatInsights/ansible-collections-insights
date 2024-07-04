@@ -28,6 +28,12 @@ are purposely not mentioned here.
 ### Fixed
 - `compliance` role: no more require priviledge escalation at playbook level
 
+### Deprecated
+- the `insights_client` role, the `insights_config` module/action, and the
+  `insights_register` module are deprecated, and marked for removal in
+  version 2.0.0; the preferred replacement for them is the `rhc` system role,
+  which provides all the features implemented by the deprecated plugins
+
 ## [1.2.2]
 ### Fixed
 - `insights_register` module: fix the `force_reregister` option to actually

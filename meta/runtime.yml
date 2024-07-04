@@ -1,2 +1,17 @@
 ---
 requires_ansible: ">=2.15.0"
+plugin_routing:
+  action:
+    insights_config:
+      deprecation:
+        removal_version: 2.0.0
+        warning_text: Use the 'rhc' system role instead.
+  modules:
+    insights_config:
+      deprecation:
+        removal_version: 2.0.0
+        warning_text: Use the 'rhc' system role instead.
+    insights_register:
+      deprecation:
+        removal_version: 2.0.0
+        warning_text: Use the 'rhc' system role instead.

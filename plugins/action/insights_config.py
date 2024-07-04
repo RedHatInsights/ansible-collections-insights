@@ -2,6 +2,9 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 from ansible.plugins.action import ActionBase
+from ansible.utils.display import Display
+
+display = Display()
 
 
 class ActionModule(ActionBase):
@@ -9,6 +12,12 @@ class ActionModule(ActionBase):
     def run(self, tmp=None, task_vars=None):
 
         result = super(ActionModule, self).run(tmp, task_vars)
+
+        display.deprecated(
+            msg="The insights_config module is deprecated. ",
+            version="2.0.0",
+            collection_name="redhat.insights"
+        )
 
         insights_name = self._task.args.get('insights_name', 'insights-client')
 
