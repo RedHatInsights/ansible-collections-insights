@@ -1,6 +1,7 @@
 insights_config - This module handles initial configuration of the insights client on install
 ====================================
 - [Synopsis](#synopsis)
+- [DEPRECATED](#deprecated)
 - [Requirements](#requirements)
 - [Notes](#notes)
 - [Parameters](#parameters)
@@ -10,6 +11,12 @@ insights_config - This module handles initial configuration of the insights clie
 Supply values for various configuration options that you would like to use. On install this module will add those values to the insights-client.conf file prior to registering.
 
 
+
+## DEPRECATED
+Please note that `insights_config` is **deprecated**:
+- To be removed in version: 2.0.0
+- Why: Its functionalities are now provided in a simpler way by the "rhc" system role.
+- Alternative: The "rhc" system role.
 
 ## Requirements
 (none)

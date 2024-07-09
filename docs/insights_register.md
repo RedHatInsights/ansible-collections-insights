@@ -1,6 +1,7 @@
 insights_register - This module registers the insights client
 ====================================
 - [Synopsis](#synopsis)
+- [DEPRECATED](#deprecated)
 - [Requirements](#requirements)
 - [Notes](#notes)
 - [Parameters](#parameters)
@@ -10,6 +11,12 @@ insights_register - This module registers the insights client
 This module will check the current registration status, unregister if needed, and then register the insights client (and update the display_name if needed)
 
 
+
+## DEPRECATED
+Please note that `insights_register` is **deprecated**:
+- To be removed in version: 2.0.0
+- Why: Its functionalities are now provided in a simpler way by the "rhc" system role.
+- Alternative: The "rhc" system role.
 
 ## Requirements
 (none)
