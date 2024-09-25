@@ -38,6 +38,10 @@ jobs:
             python: '3.10'
           - ansible: '2.17'
             python: '3.12'
+          - ansible: '2.18'
+            python: '3.10'
+          - ansible: '2.18'
+            python: '3.13'
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
