@@ -71,7 +71,7 @@ See the section 'Example Playbook' for information on various ways to use these 
 
 * authmethod: (optional)
     
-    BASIC/CERT - This parameter is used to set the authentication method for the Portal. Default bahavior is BASIC.
+    BASIC/CERT - This parameter is used to set the authentication method for the Portal. Default behavior is BASIC.
     Note: when 'auto_config' is enabled (set to True), CERT will be used if RHSM or Satellite is detected.
 
 * insights_proxy: (optional)

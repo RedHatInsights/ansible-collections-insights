@@ -26,7 +26,7 @@ are purposely not mentioned here.
   Ansible content for Insights (e.g. the `rhc` system role)
 
 ### Fixed
-- `compliance` role: no more require priviledge escalation at playbook level
+- `compliance` role: no more require privilege escalation at playbook level
 
 ### Deprecated
 - the `insights_client` role, the `insights_config` module/action, and the
