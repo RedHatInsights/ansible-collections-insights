@@ -90,7 +90,11 @@ jobs:
       - name: Run sanity tests
         uses: ansible-community/ansible-test-gh-action@release/v1
         with:
-          ansible-core-version: stable-${{ matrix.ansible }}
+          ansible-core-version: >-
+            ${{
+              startsWith(matrix.ansible, 'v') && matrix.ansible ||
+                format('stable-{0}', matrix.ansible)
+            }}
           collection-src-directory: ${{ github.workspace }}/repo
           coverage: 'never'
           target-python-version: ${{ matrix.python }}
