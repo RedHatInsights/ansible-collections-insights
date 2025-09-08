@@ -44,11 +44,15 @@ jobs:
             python: '3.13'
     runs-on: ubuntu-latest
     steps:
+
+      # ansible-test requires the collection to be in a directory in the form
+      # .../ansible_collections/NAMESPACE/COLLECTION_NAME/
+
       - name: Check out code
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          path: repo
+          path: ansible_collections/redhat/insights
 
       - name: Check out the branch
         run: |
@@ -65,7 +69,7 @@ jobs:
 
           # Show branch information
           git branch -vv
-        working-directory: repo
+        working-directory: ansible_collections/redhat/insights
         if: github.event_name == 'pull_request'
 
       - name: Get git version
@@ -73,14 +77,14 @@ jobs:
         run: |
           export version=$(git describe --tags | grep -Po '\d+\.\d+\.\d+')
           echo "git_version=$version" >> $GITHUB_OUTPUT
-        working-directory: repo
+        working-directory: ansible_collections/redhat/insights
 
       - name: Generate galaxy.yml
         run: |
           set -euxo pipefail
           sudo apt-get --no-install-recommends -y install python3 python3-jinja2
           python3 .github/scripts/jinja2-replace galaxy.yml.j2 galaxy.yml
-        working-directory: repo
+        working-directory: ansible_collections/redhat/insights
         env:
           JINJA_collection_name: insights
           JINJA_collection_namespace: redhat
@@ -95,7 +99,9 @@ jobs:
               startsWith(matrix.ansible, 'v') && matrix.ansible ||
                 format('stable-{0}', matrix.ansible)
             }}
-          collection-src-directory: ${{ github.workspace }}/repo
+          collection-src-directory: >-
+            ${{ github.workspace }}/ansible_collections/redhat
+          collection-root: insights
           coverage: 'never'
           target-python-version: ${{ matrix.python }}
           testing-type: sanity
