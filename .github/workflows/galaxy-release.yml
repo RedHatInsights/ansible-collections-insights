@@ -4,6 +4,7 @@ on:  # yamllint disable-line rule:truthy
   release:
     types:
       - published
+permissions: {}
 
 jobs:
   release:
