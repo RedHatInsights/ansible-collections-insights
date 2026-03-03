@@ -11,9 +11,10 @@ are purposely not mentioned here.
   with Jinja expressions (same behavior style as other constructed inventory
   plugins: first non-empty expression wins)
 
-### Fixed
-- `inventory` plugin: support custom hostnames without affecting patching
-  variable lookup
+### Changed
+- `inventory` plugin: explicitly document `strict`, and gate duplicate-hostname
+  failures behind `strict: true` when `hostnames` is configured; default
+  behavior remains legacy overwrite
 
 ## [1.3.0]
 ### Changed
