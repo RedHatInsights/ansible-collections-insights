@@ -5,6 +5,17 @@ that have any kind of impact on users, such as new & removed features, behaviour
 changes, and bug fixes. Internal changes such as for CI, style/lint, and so on
 are purposely not mentioned here.
 
+## [1.4.0]
+### Added
+- `inventory` plugin: new `hostnames` option to compose `inventory_hostname`
+  with Jinja expressions (same behavior style as other constructed inventory
+  plugins: first non-empty expression wins)
+
+### Changed
+- `inventory` plugin: explicitly document `strict`, and gate duplicate-hostname
+  failures behind `strict: true` when `hostnames` is configured; default
+  behavior remains legacy overwrite
+
 ## [1.3.0]
 ### Changed
 - The minimum Ansible Core version supported is now 2.15.

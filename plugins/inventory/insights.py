@@ -91,6 +91,25 @@ DOCUMENTATION = '''
         description: Prefix to apply to host variables
         default: insights_
         type: str
+      hostnames:
+        description:
+          - Optional list of Jinja2 expressions to compose C(inventory_hostname).
+          - The first non-empty rendered value is used.
+          - When unset, C(display_name) is used.
+          - If C(strict) is true and C(hostnames) is configured, duplicate
+            rendered hostnames are treated as errors.
+        type: list
+        elements: str
+      strict:
+        description:
+          - If true, invalid compose/group expressions are treated as fatal errors.
+          - If true and C(hostnames) is configured, duplicate rendered hostnames
+            are treated as fatal errors.
+          - If false, invalid expressions are skipped and duplicate rendered
+            hostnames follow legacy overwrite behavior.
+        required: false
+        type: bool
+        default: false
       get_patches:
         description: Fetch patching information for each system.
         required: false
@@ -373,6 +392,36 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                 self.display.vvv('Skipping due to inventory source not ending in "insights.yaml" nor "insights.yml"')
         return valid
 
+    def _get_hostname(self, properties, hostnames=None, strict=False):
+        if not hostnames:
+            return properties['display_name']
+
+        errors = []
+
+        for preference in hostnames:
+            try:
+                expression = preference.strip()
+                if expression.startswith('{{') and expression.endswith('}}'):
+                    expression = expression[2:-2].strip()
+                hostname = self._compose(expression, properties)
+            except Exception as e:  # pylint: disable=broad-except
+                if strict:
+                    raise AnsibleError("Could not compose %s as hostnames - %s" % (preference, str(e)))
+                errors.append((preference, str(e)))
+                continue
+
+            if hostname:
+                return str(hostname)
+
+        if errors:
+            raise AnsibleError(
+                'Could not template any hostname for host, errors for each preference: %s' % (
+                    ', '.join(['%s: %s' % (pref, err) for pref, err in errors])
+                )
+            )
+
+        return properties['display_name']
+
     def parse(self, inventory, loader, path, cache=True):
         if REQUESTS_IMPORT_ERROR:
             raise_from(AnsibleError('`requests` must be installed to use this plugin'), REQUESTS_IMPORT_ERROR)
@@ -391,7 +440,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         get_tags = self.get_option('get_tags')
         filter_tags = self.get_option('filter_tags')
         registered_with = self.get_option('registered_with')
+        hostnames = self.get_option('hostnames')
         systems_by_id = {}
+        seen_hostnames = {}
         system_tags = {}
         results = []
         get_patching_info = get_patches or get_system_advisories or get_system_packages
@@ -446,7 +497,17 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                         patching[display_name][attribute] = system['attributes'][attribute]
 
         for host in results:
-            host_name = self.inventory.add_host(host['display_name'])
+            host_name = self._get_hostname(host, hostnames=hostnames, strict=strict)
+            existing = seen_hostnames.get(host_name)
+            if hostnames and strict and existing is not None and existing != host['id']:
+                raise AnsibleError(
+                    'Duplicate inventory hostname "%s" derived from host IDs "%s" and "%s". '
+                    'Adjust the "hostnames" expressions to ensure uniqueness.' %
+                    (host_name, existing, host['id'])
+                )
+            seen_hostnames[host_name] = host['id']
+
+            host_name = self.inventory.add_host(host_name)
             systems_by_id[host['id']] = host_name
             for item in host.keys():
                 self.inventory.set_variable(host_name, vars_prefix + item, host[item])
@@ -454,7 +515,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
                     self.inventory.set_variable(host_name, 'ansible_host', host[item])
 
             if get_patching_info:
-                if host_name in patching.keys():
+                if host['display_name'] in patching.keys():
                     self.inventory.set_variable(host_name, vars_prefix + 'patching',
                                                 patching[host['display_name']])
                 else:
