@@ -5,6 +5,14 @@ that have any kind of impact on users, such as new & removed features, behaviour
 changes, and bug fixes. Internal changes such as for CI, style/lint, and so on
 are purposely not mentioned here.
 
+## [1.3.1]
+### Changed
+- Some additional files such as tests or GitHub files are no more shipped in
+  the collection itself (minor space saving)
+
+### Fixed
+- Minor documentation fixes
+
 ## [1.3.0]
 ### Changed
 - The minimum Ansible Core version supported is now 2.15.
