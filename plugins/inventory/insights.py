@@ -202,41 +202,36 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
         Contact the OpenID Connect URL to fetch an OAuth 2.0 token using
         the OAuth 2.0 Token Endpoint.
         """
-        session = requests.Session()
+        with requests.Session() as session:
+            url = self.get_option("oidc_endpoint") + "/.well-known/openid-configuration"
+            headers = {"Accept": "application/json"}
+            response = session.get(url, headers=headers)
+            if response.status_code != 200:
+                raise AnsibleError("HTTP error %s for %s: %s" %
+                                   (response.status_code, url, response.text))
+            response_json = response.json()
 
-        headers = {
-            "Accept": "application/json",
-        }
-        url = "%s/.well-known/openid-configuration" % (self.get_option('oidc_endpoint'))
-        response = session.get(url, headers=headers)
-        if response.status_code != 200:
-            raise AnsibleError("HTTP error %s for %s: %s" %
-                               (response.status_code, url, response.text))
-        response_json = response.json()
+            client_scopes = set(self.get_option('client_scopes'))
+            scopes_supported = set(response_json["scopes_supported"])
+            if excess_scopes := client_scopes - scopes_supported:
+                raise AnsibleError("client scopes %s not allowed; allowed: %s" %
+                                   (excess_scopes, scopes_supported))
 
-        client_scopes = self.get_option('client_scopes')
-        scopes_supported = response_json["scopes_supported"]
-        for client_scope in client_scopes:
-            if client_scope not in scopes_supported:
-                raise AnsibleError("client scope '%s' not allowed; allowed: %s" %
-                                   (client_scope, scopes_supported))
-
-        token_endpoint = response_json["token_endpoint"]
-        data = {
-            "client_id": self.get_option('client_id'),
-            "client_secret": self.get_option('client_secret'),
-            "grant_type": "client_credentials",
-            "scope": " ".join(client_scopes),
-        }
-        headers = {
-            "Content-Type": "application/x-www-form-urlencoded",
-        }
-        response = session.post(token_endpoint, headers=headers, data=data)
-        if response.status_code != 200:
-            raise AnsibleError("HTTP error %s for %s: %s" %
-                               (response.status_code, url, response.text))
-
-        return response.json()
+            url = response_json["token_endpoint"]
+            data = {
+                "client_id": self.get_option('client_id'),
+                "client_secret": self.get_option('client_secret'),
+                "grant_type": "client_credentials",
+                "scope": " ".join(client_scopes),
+            }
+            headers = {
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+            response = session.post(url, headers=headers, data=data)
+            if response.status_code != 200:
+                raise AnsibleError("HTTP error %s for %s: %s" %
+                                   (response.status_code, url, response.text))
+            return response.json()
 
     def create_requests_authentication(self):
         """
