@@ -155,7 +155,6 @@ keyed_groups:
 import time
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
 from ansible.errors import AnsibleError
-from ansible.module_utils.six import raise_from
 
 try:
     import requests
@@ -375,7 +374,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable):
 
     def parse(self, inventory, loader, path, cache=True):
         if REQUESTS_IMPORT_ERROR:
-            raise_from(AnsibleError('`requests` must be installed to use this plugin'), REQUESTS_IMPORT_ERROR)
+            raise AnsibleError('`requests` must be installed to use this plugin') from REQUESTS_IMPORT_ERROR
         super(InventoryModule, self).parse(inventory, loader, path)
         self._read_config_data(path)
 
